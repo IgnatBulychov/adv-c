@@ -1,9 +1,11 @@
 
 export default async function ({app, req, store, redirect, route}) {
 
-  const isLoggedIn = store.getters['auth/isLoggedIn']
+  if (!store.getters['auth/isLoggedIn']) {
+    store.commit('auth/LOGIN', app.$cookies.get('user'))
+  }
 
-  if (!isLoggedIn) {
+  if (!store.getters['auth/isLoggedIn']) {
     return redirect('/login')
   }
 }

@@ -1,63 +1,75 @@
 <template>
   <div>
-    <h1>Мои площадки</h1>
-
-    <v-btn
-      color="teal"
-      class="ma-2 white--text"
-      to="/dashboard/areas/create"
-    >
-      Создать
-      <v-icon
-        right
-        dark
-      >
-        mdi-plus
-      </v-icon>
-    </v-btn>
-
-    <v-card
-    v-for="(area,key) in areas"
-    :key="key"
-    class="mx-auto"
-  >
-    <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-      height="200px"
-    ></v-img>
-
-    <v-card-title>
-      Top western road trips
-    </v-card-title>
-
-    <v-card-subtitle>
-      1,000 miles of wonder
-    </v-card-subtitle>
-
-    <v-card-actions>
+    <div class="d-flex justify-end">
       <v-btn
-        color="orange lighten-2"
-        text
+        color="teal"
+        class="ma-2 white--text"
+        outlined
+        @click="dialogCreate = true"
       >
-        Explore
+        Добавить
+        <v-icon
+          right
+          dark
+        >
+          mdi-plus
+        </v-icon>
       </v-btn>
+    </div>
+    
+    <v-card
+      v-for="area in areas"
+      :key="area.id"
+      class="my-2 mx-2">
+      <v-list-item three-line>
+        <v-list-item-avatar
+          tile
+          size="80"
+          color="grey"
+        >
+          <v-img :src="area.poster"></v-img>
+        </v-list-item-avatar>
 
-    </v-card-actions>
+        <v-list-item-content>
+          <v-list-item-title class="text-h5 mb-1">
+            {{ area.title }}
+          </v-list-item-title>
+          <v-list-item-subtitle v-html="area.description">            
+          </v-list-item-subtitle>
+        </v-list-item-content> 
 
-  </v-card>
+        <div>
+          {{ area.network.title }}
+           <v-icon class="mr-1">
+            mdi-heart
+          </v-icon>
+          <span class="subheading mr-2">256</span>
+        </div>   
+      </v-list-item>
+    </v-card>
+
+    <v-dialog
+      v-model="dialogCreate"
+      max-width="800px"
+      persistent
+      scrollable
+    >  
+      <create-area @close="()=>{dialogCreate = false}"/>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-
+import CreateArea from '~/components/areas/create'
 import { mapGetters } from 'vuex'
 export default {
   layout: 'index',
   components: {
-    
+    CreateArea
   },
   data: () => ({
-    areas:[]
+    dialogCreate:false,
+    areas:[],
   }),
   computed: {
     ...mapGetters({
