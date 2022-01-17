@@ -39,6 +39,7 @@
             <v-sheet
               min-height="70vh"
               rounded="lg"
+              class="pb-1"
             >
               <nuxt-child/>
             </v-sheet>

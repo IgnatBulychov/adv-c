@@ -20,7 +20,7 @@
           color="teal"
           to="/search"
         >
-          Поиск рекламодателя
+          Каталог
         </v-btn>
 
         <v-spacer></v-spacer>

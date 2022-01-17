@@ -167,7 +167,6 @@
           class="mb-4"
           @select="addEmoji"/>
 
-<services-picker @servicesChanges="servicesChanges"/>
 
        
         
@@ -186,11 +185,13 @@
       <v-btn
         color="teal"
         text
-        @click="create()"
+        @click="update()"
       >
-        Создать
+        Изменить
       </v-btn>
     </v-card-actions>
+
+
 
 
   </v-card>
@@ -202,7 +203,8 @@ import ServicesPicker from '~/components/areas/ServicesPicker'
 import { mapGetters } from 'vuex'
 export default {
   layout: 'index',
-  name: 'CreateArea',
+  name: 'UpdateArea',
+  props: ['enterData'],
   components: {
     Picker, ServicesPicker
   },
@@ -212,6 +214,7 @@ export default {
     symbols: 0,
     cursorPosition: 0,
     networkKey: 0,
+
     form: {
       title: '',
       description: '',
@@ -238,12 +241,13 @@ export default {
     },
   },  
   methods: {
-    async create() {
+    async update() {
       if (!this.$refs.form.validate()) {
         return
       }
-      await this.$axios.post(`/areas`, {
+      await this.$axios.put(`/areas/${this.enterData.id}`, {
         ...this.form,
+        isPosterChanges: false,
         networkId: this.networks[this.networkKey].id,
       })
       this.$emit('close')
@@ -276,14 +280,13 @@ export default {
       this.form.poster = cropper.getCroppedCanvas().toDataURL(this.cropperOutputMime)
       
       this.openCrop = false
-    },
-    servicesChanges(services) {
-      this.form.services = services
-    }   
+    }, 
   },
   async mounted() {
     let res = await this.$axios.get(`/networks`)
     this.networks = res.data
+
+    this.form = this.enterData
   }
 }
 </script>
