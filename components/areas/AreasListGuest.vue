@@ -4,52 +4,47 @@
       v-for="area in areas"
       :key="area.id"
       class="my-2 mx-2">
-      <v-list-item three-line>
-        <v-list-item-avatar
-          tile
-          size="100"
-        >
-          <v-img :src="area.poster"></v-img>
+
+      <div class="b-area-wrapper">
+        <div class="b-avatar">
+          <v-img :src="area.poster" width="200px" height="200px"></v-img>
+        </div>
+        <div class="b-content">
+
+          <div class="b-info">
+            <h2>{{ area.title }} </h2>
+            <br>
+            <h4> {{ area.description }} </h4>
+         
           
-        </v-list-item-avatar>
-
-        <v-list-item-content>
-          <v-list-item-title class="text-h5 mb-1">            
-            {{ area.title }}
             
-          <!--
-            <p class="subtitle-1">
-              {{ area.description }}
-            </p>
--->
-            <p  class="subtitle-2">
-            
-                <v-icon class="mr-1" color="yellow">
-                  mdi-star
-                </v-icon>
-                <span class="subheading mr-2">256</span>
-              
-            </p>
-          </v-list-item-title>
-          <v-list-item-subtitle color="gray">
-            <v-avatar
-              class="mr-2"
-              size="24"
-            >
-              <v-img :src="area.network.poster"></v-img>
-            </v-avatar>
-            {{ area.network.title }}           
-          </v-list-item-subtitle>
-        </v-list-item-content> 
-
-        <div class="actions">
-          <div>        
+                 
           </div>
+
+          <div class="b-network">
+
+              
+              <v-img :src="area.network.poster" width="35px" height="35px"></v-img>
           
-        </div>   
-      </v-list-item>
+            {{ area.network.title }}   
+          </div>
+        </div>
 
+<div class="b-right">
+  <div class="b-stat">
+    <v-icon class="mr-1" color="yellow">
+      mdi-star
+    </v-icon>
+  </div>
+  <div class="b-actions">
+    <v-btn color="teal">Заказать</v-btn> 
+  </div>
+</div>
+                   
+                
+         
 
+      </div>
     </v-card>
 </div>
 </template>
@@ -78,5 +73,18 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
+}
+.b-area-wrapper {
+  display: flex;
+  height: 200px;
+}
+
+.b-content {
+  flex:1
+}
+.b-network {
+  display: flex;
+  align-items: center;
+  width: fit-content;
 }
 </style>

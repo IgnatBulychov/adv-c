@@ -45,7 +45,8 @@ import CreateArea from '~/components/areas/create'
 import UpdateArea from '~/components/areas/update'
 import { mapGetters } from 'vuex'
 export default {
-  layout: 'index',
+  layout: 'index',  
+  middleware: ['auth'],
   components: {
     CreateArea, UpdateArea, AreasList
   },

@@ -46,23 +46,13 @@
         
      
 
-      <v-responsive max-width="260">
-        <v-text-field
-          dense
-          flat
-          hide-details
-          rounded
-          solo-inverted
-        ></v-text-field>
-      </v-responsive>
-
         <v-avatar
         
         v-if="isLoggedIn"
         class="mr-10"
         color="grey darken-1"
         size="32"
-        @click="$router.push('/dashboard')"
+        @click="$router.push('/dashboard/areas')"
       ></v-avatar>
 
     </v-app-bar>

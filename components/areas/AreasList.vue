@@ -59,24 +59,24 @@
         </div>   
       </v-list-item>
 
-
+<!--
 <services-picker-with-api
  @servicesChanges="servicesChanges" 
  :enterData="area" 
  updateForm/>
-
+-->
     </v-card>
 </div>
 </template>
 
 <script>
 
-import ServicesPickerWithApi from './ServicesPickerWithApi.vue'
+//import ServicesPickerWithApi from './ServicesPickerWithApi.vue'
 export default {
   props: ['areas'],
   name: 'AreasList',
   components: {
-    ServicesPickerWithApi
+   // ServicesPickerWithApi
   },
   data: () => ({
 

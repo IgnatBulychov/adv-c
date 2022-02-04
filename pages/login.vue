@@ -81,17 +81,22 @@
                 
           <v-snackbar
             v-model="errorsFromServer"
-            :timeout="6000"
+            :timeout="3000"
             :top="true"
             color="error"
-          >f
-          <v-btn
-            color="white"
-            text
-            @click="errorsFromServer = false"
           >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
+            {{ errorMessage }}
+        
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                color="white"
+                text icon
+                v-bind="attrs"
+                @click="errorsFromServer = false"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
           </v-snackbar>
         </v-col>
       </v-row>
@@ -110,7 +115,8 @@ export default {
           email: '',
           password: ''
       },    
-      errorsFromServer:{},
+      errorsFromServer:false,
+      errorMessage:'',
       loading: false,
       emailRules: [
         v => !!v || 'Введите E-mail',
@@ -125,9 +131,15 @@ export default {
     ...mapActions({
       'login' : 'auth/login'
     }),
-    authenticate() {
+    async authenticate() {
       if (this.validate()) {
-        this.login(this.form)
+        try {
+          await this.login(this.form)
+        } catch(e) {
+          console.log(e.response.data)
+          this.errorsFromServer = true
+          this.errorMessage = e.response.data
+        }       
       }
     },
     validate () {

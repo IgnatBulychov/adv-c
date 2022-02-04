@@ -221,7 +221,7 @@ export default {
       poster: null,
       services: []
     },
-    
+    isPosterChanges: false,
     file: null,    
     openCrop: false,
     titleRules: [
@@ -229,9 +229,15 @@ export default {
     ],
   }),
   watch: {
+    enterData() {      
+      this.form = this.enterData
+    },
     file() {
       this.openCrop = true
       console.log(this.file)
+      if (!this.file) {
+        this.isPosterChanges = false
+      }
     },
     dialog (val) {
       val || this.close()
@@ -247,9 +253,15 @@ export default {
       }
       await this.$axios.put(`/areas/${this.enterData.id}`, {
         ...this.form,
-        isPosterChanges: false,
+        isPosterChanges: this.isPosterChanges,
         networkId: this.networks[this.networkKey].id,
       })
+      this.form = {
+        title: '',
+        description: '',
+        poster: null,
+        services: []
+      }
       this.$emit('close')
     },
     saveCursor(){
@@ -278,7 +290,7 @@ export default {
     },
      async cropperHandler(cropper) {
       this.form.poster = cropper.getCroppedCanvas().toDataURL(this.cropperOutputMime)
-      
+      this.isPosterChanges = true
       this.openCrop = false
     }, 
   },

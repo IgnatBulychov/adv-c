@@ -32,18 +32,18 @@ export const actions = {
     try {
       let response = await this.$axios.$post('/register', form)
       commit('LOGIN', response.user)
-      this.$router.push('/search')
+      this.$router.push('/dashboard/areas')
     } catch(e) {
-      console.log(e)
+      throw e
     }
   },
   async login({ commit }, form) {
     try {
       let response = await this.$axios.$post('/login', form)
       commit('LOGIN', response.user)
-      this.$router.push('/dashboard')
+      this.$router.push('/dashboard/areas')
     } catch(e) {
-      console.log(e)
+      throw e
     }
   },
   logout(context) { 

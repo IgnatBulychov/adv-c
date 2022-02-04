@@ -27,7 +27,7 @@
     </v-tooltip>
 
 <div class="pl-8 text-center ">
-      Где размещен ваш блог, сообщество, канал и т.п.
+      Где размещен ваш блог, сообщество, канал или где будет размещаться реклама
 </div>
       <v-item-group
         v-model="networkKey"
@@ -150,6 +150,46 @@
       <span>Расскажите подробнее о чем ваш сайт или блог. Какие интересы объединяют ваше сообщество или канал. Можно использовать эмодзи.</span>
     </v-tooltip>
 
+
+  <v-tooltip left max-width="150">
+                  <template v-slot:activator="{ on, attrs }">
+                     <v-select
+                      v-bind="attrs"
+                      v-on="on"
+                    v-model="form.categories"
+                    :items="categories"
+                     item-text="title"
+                     item-value="id"
+                    chips
+                    label="Категории"
+                    multiple
+                    outlined
+                    color="teal"
+                    item-color="teal"
+                    class="pl-8"
+                  ></v-select>
+                  </template>
+      <span>
+        Подберите подходящие тематические теги, чтобы вашу площадку было легче найти
+      </span>
+    </v-tooltip>
+
+
+    <v-tooltip left max-width="150">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-bind="attrs"
+                      v-on="on"
+                      label="Цена за клик по рекламе"
+                      outlined
+                      type="number"
+                      color="teal"
+                      prepend-icon="₽"
+                      v-model="form.cpc"/>
+                  </template>
+                  <span>Сколько подписчиков на вашем канале, блоге, группе</span>
+                </v-tooltip>
+
        
 
         <picker          
@@ -166,9 +206,9 @@
           :showPreview="false"
           class="mb-4"
           @select="addEmoji"/>
-
+<!--
 <services-picker @servicesChanges="servicesChanges"/>
-
+-->
        
         
           
@@ -198,25 +238,28 @@
 
 <script>
 import { Picker } from 'emoji-mart-vue'
-import ServicesPicker from '~/components/areas/ServicesPicker'
+//import ServicesPicker from '~/components/areas/ServicesPicker'
 import { mapGetters } from 'vuex'
 export default {
   layout: 'index',
   name: 'CreateArea',
   components: {
-    Picker, ServicesPicker
+    Picker,// ServicesPicker
   },
   data: () => ({
     networks: [],
+    categories:[],
     showEmoj: 0,
-    symbols: 0,
     cursorPosition: 0,
     networkKey: 0,
     form: {
       title: '',
       description: '',
       poster: null,
-      services: []
+     // services: [],
+     
+      categories: [],
+      cpc: null
     },
     
     file: null,    
@@ -272,18 +315,22 @@ export default {
         this.cursorPosition = this.cursorPosition + em.native.length
       }      
     },
-     async cropperHandler(cropper) {
+    async cropperHandler(cropper) {
       this.form.poster = cropper.getCroppedCanvas().toDataURL(this.cropperOutputMime)
       
       this.openCrop = false
     },
-    servicesChanges(services) {
+   /* servicesChanges(services) {
       this.form.services = services
-    }   
+    }   */
   },
   async mounted() {
-    let res = await this.$axios.get(`/networks`)
-    this.networks = res.data
+    let res = await Promise.all([
+      this.$axios.get(`/networks`),
+      this.$axios.get(`/categories`)
+    ])
+    this.networks = res[0].data
+    this.categories = res[1].data
   }
 }
 </script>

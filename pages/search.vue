@@ -8,6 +8,36 @@
 <v-list
       flat
     >
+      <v-subheader>Категории</v-subheader>
+
+      <v-list-item-group
+        v-model="selectedCategories"
+        multiple
+        active-class=""
+        @change="findAreas"
+      >
+        <v-list-item v-for="category in categories" :key="category.id" :value="category.id">
+          <template v-slot:default="{ active }">
+            <v-list-item-action>
+              <v-checkbox :input-value="active"></v-checkbox>
+            </v-list-item-action>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ category.title }}</v-list-item-title>
+            </v-list-item-content>
+
+            
+          </template>
+        </v-list-item>
+
+        
+      </v-list-item-group>
+    </v-list>
+
+
+<v-list
+      flat
+    >
       <v-subheader>Размещение</v-subheader>
 
       <v-list-item-group
@@ -41,7 +71,6 @@
 
 
 
-
             
             
             </v-sheet> 
@@ -51,7 +80,7 @@
             <v-sheet
               min-height="70vh"
               rounded="lg"
-              class="pb-1"
+              class="py-1"
             >
               
               
@@ -76,6 +105,7 @@ export default {
   },
   data: () => ({
     selectedNetworks:[],
+    selectedCategories: [],
     networks: [],
     areas:[],
   }),
@@ -83,6 +113,7 @@ export default {
     async findAreas() {
       let params = {}
       if (this.selectedNetworks.length) params.networksIds = this.selectedNetworks.join(',')
+      if (this.selectedCategories.length) params.categoriesIds = this.selectedCategories.join(',')
       try {
         let res = await this.$axios.get(`/areas/search`, {
           params: params
@@ -92,13 +123,17 @@ export default {
 
       }
     },
-    async findNetwork() {
-      let res = await this.$axios.get(`/networks`)
-      this.networks = res.data
-    },
   },
   async mounted() {
-    await this.findNetwork()
+
+
+    let res = await Promise.all([
+      this.$axios.get(`/networks`),
+      this.$axios.get(`/categories`)
+    ])
+    this.networks = res[0].data
+    this.categories = res[1].data
+
     this.findAreas()
   }
 }
