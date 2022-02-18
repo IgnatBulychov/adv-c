@@ -29,4 +29,9 @@ export default {
   axios: {
     baseURL: process.env.SERVER_URL, // Used as fallback if no runtime config is provided
   },
+  router: {
+    middleware: [
+      'main'
+    ]
+  },
 }

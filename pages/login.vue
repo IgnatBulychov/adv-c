@@ -9,9 +9,9 @@
         <v-col
           class="py-5 my-5"
           cols="12"
-          xs="12"
-          sm="8"
-          md="6"  
+          xs="10"
+          sm="4"
+          md="4"  
           lg="4"          
         >   
           <v-card class="elevation-12 my-5">

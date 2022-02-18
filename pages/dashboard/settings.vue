@@ -1,52 +1,39 @@
 <template>
-  <div>
-    Настройки профиля
+  <div class="b-wrapper">
 
     <div class="b-avatar">
-      <v-img :src="avatar" width="200px" height="200px"></v-img>
-    </div>
-
-      <v-tooltip left max-width="150">
-        <template v-slot:activator="{ on }">          
+     
+         <img :src="ava" >
+         
+    </div> 
           <v-file-input
-            @mouseenter.native='on.mouseenter'
-            @mouseleave.native='on.mouseleave'
             color="teal"
-            label="Аватар"
+            label="Загрузите аватарку"
             outlined
             dense
             v-model="file"
           ></v-file-input>
-        </template>
-        <span>Загрузите новую аватарку</span>
-      </v-tooltip>
 
 
             <v-text-field
-              v-bind="attrs"
-              v-on="on"
               label="Имя"
               outlined
               color="teal"
-              prepend-icon="₽"
+               class="pl-8"
               v-model="form.firstName"/>
 
              <v-text-field
-              v-bind="attrs"
-              v-on="on"
               label="Фамилия"
               outlined
               color="teal"
-              prepend-icon="₽"
+               class="pl-8"
               v-model="form.lastName"/>
 
          <v-textarea
-          v-bind="attrs"
-          v-on="on"
           outlined
           ref="about"
           v-model="form.about"
-          label="Описание"
+          label="Расскажите о себе"
           color="teal"
           prepend-icon="mdi-emoticon-outline"
           @keydown="saveCursor"
@@ -74,7 +61,7 @@
       :upload-handler="cropperHandler"
       v-model="openCrop"/>
        
-
+<client-only>
         <picker          
           :style="{ 
             width: '100%', 
@@ -83,13 +70,13 @@
             opacity: showEmoj ? 1 : 0, 
             overflow: 'hidden',
             'margin-left': 'auto',
-            width: '700px',
+            width: '100%',
           }"
           color="#009688"
           :showPreview="false"
           class="mb-4"
           @select="addEmoji"/>
-
+</client-only>
   </div>
 </template>
 
@@ -120,6 +107,11 @@ export default {
     file() {
       this.openCrop = true
     },
+  },
+  computed: {
+    ava() {
+      return this.avatar
+    }
   },
   methods:{
     async editProfile() {
@@ -155,11 +147,11 @@ export default {
       }      
     },
     async cropperHandler(cropper) {
-      await this.$axios.put(`/profile/edit-avatar`, {
+      let response = await this.$axios.put(`/profile/change-avatar`, {
         avatar:cropper.getCroppedCanvas().toDataURL(this.cropperOutputMime)
-      })      
-
-      this.openCrop = false
+      })  
+      console.log(response)
+      this.avatar = response.data.avatar
     },
 
   },
@@ -171,3 +163,20 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.b-wrapper {
+  padding: 10px 20px
+}
+.b-avatar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+.b-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+</style>

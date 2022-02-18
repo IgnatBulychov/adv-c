@@ -23,11 +23,14 @@
             </p>
 -->
             <p  class="subtitle-2">
+
+             CPC: {{area.cpc}} ₽
             
-                <v-icon class="mr-1" color="yellow">
+                
+                <!--<v-icon class="mr-1" color="yellow">
                   mdi-star
                 </v-icon>
-                <span class="subheading mr-2">256</span>
+                <span class="subheading mr-2">256</span>-->
               
             </p>
           </v-list-item-title>

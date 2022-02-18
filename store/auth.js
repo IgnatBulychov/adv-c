@@ -22,7 +22,7 @@ export const mutations = {
   },
   logout(state) {
     this.$cookies.remove('user')
-    state.currentUser = null
+    state.user = null
     state.isLoggedIn = false   
   },
 }

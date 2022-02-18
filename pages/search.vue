@@ -1,38 +1,10 @@
 <template>
    <v-container fluid>
         <v-row>
-          <v-col cols="2">
+          <v-col cols="3">
             <v-sheet rounded="lg">
               
-              
-<v-list
-      flat
-    >
-      <v-subheader>Категории</v-subheader>
 
-      <v-list-item-group
-        v-model="selectedCategories"
-        multiple
-        active-class=""
-        @change="findAreas"
-      >
-        <v-list-item v-for="category in categories" :key="category.id" :value="category.id">
-          <template v-slot:default="{ active }">
-            <v-list-item-action>
-              <v-checkbox :input-value="active"></v-checkbox>
-            </v-list-item-action>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ category.title }}</v-list-item-title>
-            </v-list-item-content>
-
-            
-          </template>
-        </v-list-item>
-
-        
-      </v-list-item-group>
-    </v-list>
 
 
 <v-list
@@ -69,6 +41,36 @@
     </v-list>
 
 
+              
+<v-list
+      flat dense
+    >
+      <v-subheader>Категории</v-subheader>
+
+      <v-list-item-group
+        v-model="selectedCategories"
+        multiple
+        active-class=""
+        @change="findAreas"
+      >
+        <v-list-item v-for="category in categories" :key="category.id" :value="category.id">
+          <template v-slot:default="{ active }">
+            <v-list-item-action>
+              <v-checkbox :input-value="active"></v-checkbox>
+            </v-list-item-action>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ category.title }}</v-list-item-title>
+            </v-list-item-content>
+
+            
+          </template>
+        </v-list-item>
+
+        
+      </v-list-item-group>
+    </v-list>
+
 
 
             
@@ -85,7 +87,17 @@
               
               
 
-    <areas-list-guest :areas="areas"/>
+    <areas-list-guest :areas="areas" @selecteOffer="selecteOffer"/>
+
+      <v-dialog
+      v-model="dialogCreateOffer"
+      max-width="800px"
+      persistent
+      scrollable
+    >  
+      <create-offer :selectedArea="selectedArea" @close="()=>{dialogCreateOffer = false;}"/>
+    </v-dialog>
+
 
 
 
@@ -98,16 +110,21 @@
 <script>
 
 import AreasListGuest from '~/components/areas/AreasListGuest'
+
+import CreateOffer from '~/components/offers/create'
 export default {
   layout: 'index',
   components: {
-    AreasListGuest
+    AreasListGuest, CreateOffer
   },
   data: () => ({
     selectedNetworks:[],
     selectedCategories: [],
     networks: [],
     areas:[],
+    categories: [],
+    dialogCreateOffer: false,
+    selectedArea: {}
   }),
   methods: {
     async findAreas() {
@@ -123,6 +140,9 @@ export default {
 
       }
     },
+    selecteOffer() {
+      
+    }
   },
   async mounted() {
 

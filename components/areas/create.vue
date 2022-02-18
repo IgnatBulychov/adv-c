@@ -175,9 +175,7 @@
     </v-tooltip>
 
 
-    <v-tooltip left max-width="150">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
+     <v-text-field
                       v-bind="attrs"
                       v-on="on"
                       label="Цена за клик по рекламе"
@@ -186,9 +184,6 @@
                       color="teal"
                       prepend-icon="₽"
                       v-model="form.cpc"/>
-                  </template>
-                  <span>Сколько подписчиков на вашем канале, блоге, группе</span>
-                </v-tooltip>
 
        
 

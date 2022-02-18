@@ -129,6 +129,7 @@
                   <span>Сколько подписчиков на вашем канале, блоге, группе</span>
                 </v-tooltip>
 
+
     
 
     <v-tooltip left max-width="150">
@@ -151,6 +152,37 @@
     </v-tooltip>
 
        
+       
+  <v-tooltip left max-width="150">
+                  <template v-slot:activator="{ on, attrs }">
+                     <v-select
+                      v-bind="attrs"
+                      v-on="on"
+                    v-model="form.categories"
+                    :items="categories"
+                     item-text="title"
+                     item-value="id"
+                    chips
+                    label="Категории"
+                    multiple
+                    outlined
+                    color="teal"
+                    item-color="teal"
+                    class="pl-8"
+                  ></v-select>
+                  </template>
+      <span>
+        Подберите подходящие тематические теги, чтобы вашу площадку было легче найти
+      </span>
+    </v-tooltip>
+    
+         <v-text-field
+                      label="Цена за клик по рекламе"
+                      outlined
+                      type="number"
+                      color="teal"
+                      prepend-icon="₽"
+                      v-model="form.cpc"/>
 
         <picker          
           :style="{ 
@@ -214,12 +246,15 @@ export default {
     symbols: 0,
     cursorPosition: 0,
     networkKey: 0,
-
+  categories:[],
     form: {
       title: '',
       description: '',
       poster: null,
-      services: []
+      //services: []
+      
+      categories: [],
+      cpc: null
     },
     isPosterChanges: false,
     file: null,    
@@ -295,9 +330,12 @@ export default {
     }, 
   },
   async mounted() {
-    let res = await this.$axios.get(`/networks`)
-    this.networks = res.data
-
+    let res = await Promise.all([
+      this.$axios.get(`/networks`),
+      this.$axios.get(`/categories`)
+    ])
+    this.networks = res[0].data
+    this.categories = res[1].data
     this.form = this.enterData
   }
 }

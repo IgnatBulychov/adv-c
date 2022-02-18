@@ -34,7 +34,7 @@
       persistent
       scrollable
     >  
-      <update-area v-if="currentAreaEdit" :enterData="currentAreaEdit" @close="()=>{dialogUpdate = false; getAreas()}"/>
+      <update-area v-if="currentAreaEdit" :enterData="currentAreaEdit" @close="()=>{dialogUpdate = false;  getAreas()}"/>
     </v-dialog>
   </div>
 </template>
