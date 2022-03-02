@@ -11,11 +11,11 @@ export default {
     }
   },
   mounted() {
-    this.socket = ioClientVue('http://localhost:3050', { //https://plays-server.herokuapp.com
+    this.socket = ioClientVue('http://localhost:3050', {
       withCredentials: true
     });
     this.socket.on('START_GAME_CLIENT', (items) => {
-      // this.
+       //
     })
   }
 }

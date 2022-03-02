@@ -1,7 +1,5 @@
-<template>
-    
-
-    <v-data-table
+<template> 
+  <v-data-table
     :headers="headers"
     :items="services"
     sort-by="calories"

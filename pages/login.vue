@@ -52,53 +52,48 @@
                 ></v-text-field>
               </v-card-text>
 
-              <v-card-actions>  
-
+              <v-card-actions>
                 <v-btn icon color="teal" to="/">
-                <v-icon>
-                  mdi-arrow-left
-                </v-icon>
-                </v-btn>   
-                              
-                  <div class="flex-grow-1"></div>
+                  <v-icon>
+                    mdi-arrow-left
+                  </v-icon>
+                </v-btn>                              
+                <div class="flex-grow-1"></div>
                   <v-btn 
                     color="teal"
                     type="submit"
                     dark
                     :disabled="loading"
                   >Войти</v-btn>
-
-              </v-card-actions>
-
-              <v-progress-linear
-                v-if="loading"
-                indeterminate
-                color="teal"
-              ></v-progress-linear>
-              
-            </v-form>
-          </v-card>
+                </v-card-actions>
+                <v-progress-linear
+                  v-if="loading"
+                  indeterminate
+                  color="teal"
+                ></v-progress-linear>
+              </v-form>
+            </v-card>
                 
-          <v-snackbar
-            v-model="errorsFromServer"
-            :timeout="3000"
-            :top="true"
-            color="error"
-          >
-            {{ errorMessage }}
-        
-            <template v-slot:action="{ attrs }">
-              <v-btn
-                color="white"
-                text icon
-                v-bind="attrs"
-                @click="errorsFromServer = false"
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </template>
-          </v-snackbar>
-        </v-col>
+            <v-snackbar
+              v-model="errorsFromServer"
+              :timeout="3000"
+              :top="true"
+              color="error"
+            >
+              {{ errorMessage }}
+          
+              <template v-slot:action="{ attrs }">
+                <v-btn
+                  color="white"
+                  text icon
+                  v-bind="attrs"
+                  @click="errorsFromServer = false"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </template>
+            </v-snackbar>
+          </v-col>
       </v-row>
     </v-container>
   </v-main>

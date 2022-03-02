@@ -1,92 +1,86 @@
 <template>
   <div class="b-wrapper">
-
-    <div class="b-avatar">
-     
-         <img :src="ava" >
-         
+    <div class="b-avatar">     
+      <img :src="ava">
     </div> 
-          <v-file-input
-            color="teal"
-            label="Загрузите аватарку"
-            outlined
-            dense
-            v-model="file"
-          ></v-file-input>
 
+    <v-file-input
+      color="teal"
+      label="Загрузите аватарку"
+      outlined
+      dense
+      v-model="file"/>
 
-            <v-text-field
-              label="Имя"
-              outlined
-              color="teal"
-               class="pl-8"
-              v-model="form.firstName"/>
+    <v-text-field
+      label="Имя"
+      outlined
+      color="teal"
+      class="pl-8"
+      v-model="form.firstName"/>
 
-             <v-text-field
-              label="Фамилия"
-              outlined
-              color="teal"
-               class="pl-8"
-              v-model="form.lastName"/>
+    <v-text-field
+      label="Фамилия"
+      outlined
+      color="teal"
+      class="pl-8"
+      v-model="form.lastName"/>
 
-         <v-textarea
-          outlined
-          ref="about"
-          v-model="form.about"
-          label="Расскажите о себе"
-          color="teal"
-          prepend-icon="mdi-emoticon-outline"
-          @keydown="saveCursor"
-          @click="saveCursor"
-          @click:prepend="()=>{showEmoj ? showEmoj = 0 : showEmoj = 200 }"
-        ></v-textarea>
+    <v-textarea
+      outlined
+      ref="about"
+      v-model="form.about"
+      label="Расскажите о себе"
+      color="teal"
+      prepend-icon="mdi-emoticon-outline"
+      @keydown="saveCursor"
+      @click="saveCursor"
+      @click:prepend="()=>{showEmoj ? showEmoj = 0 : showEmoj = 200 }"
+    ></v-textarea>
 
-<avatar-cropper
+    <avatar-cropper
       :output-options="{width: 350, height: 350}"
       :file="file"
       :cropper-options="{
-                          aspectRatio: 1 / 1,
-                          autoCropArea: 1,
-                          viewMode: 1,
-                          movable: true,
-                          minCropBoxHeight: 100,
-                          minCropBoxWidth: 100,
-                          minCropBoxHeight: 100,
-                          minCropBoxWidth: 100,
-                          minContainerWidth: 400,
-                          minContainerHeight: 300,
-                          zoomable: false,
-                        }"
+                        aspectRatio: 1 / 1,
+                        autoCropArea: 1,
+                        viewMode: 1,
+                        movable: true,
+                        minCropBoxHeight: 100,
+                        minCropBoxWidth: 100,
+                        minCropBoxHeight: 100,
+                        minCropBoxWidth: 100,
+                        minContainerWidth: 400,
+                        minContainerHeight: 300,
+                        zoomable: false,
+                      }"
       :labels="{submit: 'Сохранить', cancel: 'Отмена'}"
       :upload-handler="cropperHandler"
       v-model="openCrop"/>
        
-<client-only>
-        <picker          
-          :style="{ 
-            width: '100%', 
-            height: showEmoj+'px', 
-            transition: 'all .3s' , 
-            opacity: showEmoj ? 1 : 0, 
-            overflow: 'hidden',
-            'margin-left': 'auto',
-            width: '100%',
-          }"
-          color="#009688"
-          :showPreview="false"
-          class="mb-4"
-          @select="addEmoji"/>
-</client-only>
+    <client-only>
+      <picker          
+        :style="{ 
+          width: '100%', 
+          height: showEmoj+'px', 
+          transition: 'all .3s' , 
+          opacity: showEmoj ? 1 : 0, 
+          overflow: 'hidden',
+          'margin-left': 'auto',
+          width: '100%',
+        }"
+        color="#009688"
+        :showPreview="false"
+        class="mb-4"
+        @select="addEmoji"/>
+    </client-only>
   </div>
 </template>
 
 <script>
 
-
 import { Picker } from 'emoji-mart-vue'
 export default {
   layout: 'index',
-  
   middleware: ['auth'],
   components: {
     Picker
@@ -120,9 +114,9 @@ export default {
       })
     },
     changeAvatar() {
-
+      //
     },
-     saveCursor(){
+    saveCursor(){
       this.$refs.about.focus()
       setTimeout(()=>{
         this.cursorPosition = this.$refs.about.$el.querySelector("textarea").selectionStart
@@ -149,11 +143,9 @@ export default {
     async cropperHandler(cropper) {
       let response = await this.$axios.put(`/profile/change-avatar`, {
         avatar:cropper.getCroppedCanvas().toDataURL(this.cropperOutputMime)
-      })  
-      console.log(response)
+      })
       this.avatar = response.data.avatar
     },
-
   },
   async mounted() {
     let response = await this.$axios.get(`/profile`)

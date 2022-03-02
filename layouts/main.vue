@@ -1,8 +1,6 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app dark color="teal" >
-
-
       <v-list>
         <v-list-item
           v-for="[icon, text, link] in links"
@@ -20,13 +18,10 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
     <v-app-bar app color="teal" dark >
       <v-app-bar-nav-icon @click="drawer = !drawer" ></v-app-bar-nav-icon>
-
       <v-toolbar-title>{{ title }}</v-toolbar-title>
     </v-app-bar>
-
     <v-main>
       <nuxt/>
     </v-main>

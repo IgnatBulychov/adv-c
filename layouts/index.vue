@@ -43,55 +43,44 @@
           Регистрация
         </v-btn>
       </v-toolbar-items>
-        
-    
-      
 
-
-<div >
-    <v-menu offset-y  left v-if="isLoggedIn">
-      <template v-slot:activator="{ on, attrs }">
-        <div  v-bind="attrs"
-          v-on="on">
-          <div class="b-profile">
-        <div class="e-name">
-{{ user.firstName }} {{ user.lastName }} 
-        </div>
-          <v-avatar
-        
-       
-        class="mr-10"
-        color="grey darken-1"
-        size="32"
-      >
-      <v-img
-       :src="user.avatar"
-      />
-      
-      </v-avatar>
-        </div>
-        </div>
-      </template>
-      <v-list>
-        <v-list-item  @click="$router.push('/dashboard/settings')">
-          <v-list-item-title >Настройки</v-list-item-title>
-        </v-list-item>
-         <v-list-item  @click="$router.push('/dashboard/areas')">
-          <v-list-item-title >Мои площадки</v-list-item-title>
-        </v-list-item>
-         <v-list-item  @click="$router.push('/dashboard/offers')">
-          <v-list-item-title >Мои заказы</v-list-item-title>
-        </v-list-item>
-        <v-list-item  @click="logout">
-          <v-list-item-title >Выйти</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-    
-  </div>
-
+      <div>
+        <v-menu offset-y  left v-if="isLoggedIn">
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on">
+              <div class="b-profile">
+                <div class="e-name">
+                  {{ user.firstName }} {{ user.lastName }} 
+                </div>
+                <v-avatar
+                  class="mr-10"
+                  color="grey darken-1"
+                  size="32"
+                >
+                  <v-img
+                    :src="user.avatar"
+                  />
+                </v-avatar>
+              </div>
+            </div>
+          </template>
+          <v-list>
+            <v-list-item  @click="$router.push('/dashboard/settings')">
+              <v-list-item-title >Настройки</v-list-item-title>
+            </v-list-item>
+            <v-list-item  @click="$router.push('/dashboard/areas')">
+              <v-list-item-title >Мои площадки</v-list-item-title>
+            </v-list-item>
+            <v-list-item  @click="$router.push('/dashboard/offers')">
+              <v-list-item-title >Мои заказы</v-list-item-title>
+            </v-list-item>
+            <v-list-item  @click="logout">
+              <v-list-item-title >Выйти</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
     </v-app-bar>
-
     <v-main class="grey lighten-3">
       <nuxt/>
     </v-main>

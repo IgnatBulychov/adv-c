@@ -1,41 +1,31 @@
 <template>
-<div>
+  <div>
+    <v-card
+      class="mx-auto"
+      max-width="344"
+    >
+      <v-img
+        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+        height="200px"
+      ></v-img>
+      <v-card-title> 
+        Top western road trips
+      </v-card-title>
+      <v-card-subtitle>
+        1,000 miles of wonder
+      </v-card-subtitle>
+      <v-card-actions>
+        <v-btn
+          color="orange lighten-2"
+          text
+        >
+          Explore
+        </v-btn>
+        <v-spacer></v-spacer>
+      </v-card-actions>
+    </v-card>
 
-  купите качественную рекламу в соцсетях
-
-  Ваше обьявление увидит только заинтересованные пользователи
-  <v-card
-    class="mx-auto"
-    max-width="344"
-  >
-    <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-      height="200px"
-    ></v-img>
-
-    <v-card-title>
-      Top western road trips
-    </v-card-title>
-
-    <v-card-subtitle>
-      1,000 miles of wonder
-    </v-card-subtitle>
-
-    <v-card-actions>
-      <v-btn
-        color="orange lighten-2"
-        text
-      >
-        Explore
-      </v-btn>
-
-      <v-spacer></v-spacer>
-
-    </v-card-actions>
-
-  </v-card>
-
-  <v-card
+    <v-card
       class="mx-auto"
       color="#26c6da"
       dark
@@ -86,17 +76,13 @@
         </v-list-item>
       </v-card-actions>
     </v-card>
-</div>
-
+  </div>
 </template>
 
 <script>
-
-
 export default {
   layout: 'index',
   components: {
-    
   },
   data: () => ({ 
     drawer: null,
