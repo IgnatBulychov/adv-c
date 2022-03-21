@@ -203,7 +203,6 @@ export default {
    watch: {
     file() {
       this.openCrop = true
-      console.log(this.file)
     },
    }, 
   methods: {
@@ -214,7 +213,7 @@ export default {
           areaId: this.selectedArea.id
         })
         this.success = true
-        this.$router.push('/dashboard/offers')
+        this.$router.push('/dashboard/offers/my')
       } catch(e) {
         this.errorsFromServer = true
         this.errorMessage = e.response.data

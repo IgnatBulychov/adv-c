@@ -60,7 +60,7 @@ export default {
   methods: {
     openOffer(offer, meta) {
       console.log(offer)
-      this.$router.push(`/dashboard/offers/${offer.id}`)
+      this.$router.push(`/dashboard/offers/others/${offer.id}`)
     },
   },
   async created() {

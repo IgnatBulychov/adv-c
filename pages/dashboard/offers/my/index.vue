@@ -11,6 +11,20 @@
       <template v-slot:item.summ="{ item }">        
         {{ item.cpc * item.quantity }}          
       </template>
+      <template v-slot:item.seller="{ item }">    
+        <div class="b-author">  
+          <div class="b-author-name"> 
+          {{ item.seller.firstName }}  {{ item.seller.lastName }}   
+          </div>   
+          <v-avatar
+            class="mr-1"
+            color="grey lighten-1"
+            size="24"  
+          >
+              <v-img :src="item.seller.avatar" class="e-avatar"></v-img>
+          </v-avatar>          
+        </div>
+      </template>
      
       <template v-slot:item.status="{ item }">        
         {{ statuses[item.status] }}          
@@ -39,6 +53,7 @@ export default {
         { text: 'Площадка', value: 'areaTitle', sortable:false },
         { text: 'Количество кликов', value: 'quantity', sortable:false },
         { text: 'Стоимость заказа', value: 'summ', sortable:false },
+        { text: 'Продавец', value: 'seller', sortable:false },
         { text: 'Статус', value: 'status', sortable:false },
         { text: 'Дата', value: 'createdAt' , sortable:false},
       ],
@@ -50,7 +65,7 @@ export default {
   methods: {
     openOffer(offer, meta) {
       console.log(offer)
-      this.$router.push(`/dashboard/offers/${offer.id}`)
+      this.$router.push(`/dashboard/offers/my/${offer.id}`)
     }, 
   },
   async created() {

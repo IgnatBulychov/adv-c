@@ -3,7 +3,8 @@
     <v-card 
       v-for="area in areas"
       :key="area.id"
-      class="my-2 mx-2">
+      class="my-2 mx-2"
+      :to="`/areas/${area.id}`">
       <div class="b-area-wrapper">
         <div class="b-avatar">
           <v-img :src="area.poster" width="120px" height="120px" class="e-avatar"></v-img>
@@ -42,7 +43,7 @@
           <div class="b-description"> цена за клик </div>
           </div>
           <div class="b-actions">
-            <v-btn @click="$emit('openOfferDialog',area)" color="teal" dark>Заказать</v-btn> 
+            <v-btn @click.prevent="$emit('openOfferDialog',area)" color="teal" dark>Заказать</v-btn> 
           </div>
         </div>
       </div>
