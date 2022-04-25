@@ -25,6 +25,7 @@ export default {
   plugins: [
     {src: '@/plugins/axios'},
     {src: '~/plugins/avatar-cropper', mode: 'client'},
+    {src: '~/plugins/observe-visibility', mode: 'client'}
   ],
   axios: {
     baseURL: process.env.SERVER_URL, // Used as fallback if no runtime config is provided

@@ -59,7 +59,6 @@ export default {
   },
   methods: {
     openOffer(offer, meta) {
-      console.log(offer)
       this.$router.push(`/dashboard/offers/others/${offer.id}`)
     },
   },

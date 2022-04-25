@@ -15,7 +15,8 @@
     "emoji-mart-vue": "^2.6.6",
     "nuxt": "^2.15.8",
     "socket.io-client": "^4.3.2",
-    "vue-avatar-cropper": "^5.0.2"
+    "vue-avatar-cropper": "^5.0.2",
+    "vue-observe-visibility": "^1.0.0"
   },
   "devDependencies": {}
 }

@@ -1,7 +1,7 @@
 <template>
-  <div v-if="offer && !offer.isMine">
+  <div v-if="offer && !offer.isMine" class="px-1">
     <v-row>
-      <v-col cols="8">
+      <v-col cols="12" md="8">
 
       <v-stepper
         v-model="step"
@@ -12,7 +12,7 @@
           step="1"
         >
           Вам поступил заказ
-          <small>Если вы готовы разместить следующее объявление заказчика и обещаете предоставить заказанное
+          <small v-if="step == 1">Если вы готовы разместить следующее объявление заказчика и обещаете предоставить заказанное
             количество переходов на ссылки, нажмите Подтвердить. Если не согласны, нажмите Отклонить и договоритесь с 
             заказчиком через мессенджер о других условиях сделки.
           </small>
@@ -24,10 +24,10 @@
             class="mb-12"
             height="100px"
           >
-            Площадка: {{ offer.areaTitle }} <br>
+            Площадка: {{ offer.area.title }} <br>
             Заказчик: <nuxt-link :to="`/user/${offer.buyer.id}`"> {{ offer.buyer.firstName }} {{ offer.buyer.lastName }} </nuxt-link> <br>
             Количество кликов: {{ offer.quantity }}
-            Стоимость заказа: {{ offer.quantity * offer.cpc }} ₽
+            Стоимость заказа: {{ offer.quantity * offer.area.cpc }} ₽
           </v-card>
           <v-card
             color="grey lighten-4"
@@ -55,7 +55,7 @@
           step="2"
         >
           Заказ принят
-          <small>Ожидайте пока закзачик произведет оплату. 
+          <small v-if="step == 2">Ожидайте пока закзачик произведет оплату. 
           </small>
         </v-stepper-step>
 
@@ -76,7 +76,7 @@
           step="3"
         >
            Заказ оплачен заказчиком
-          <small>Ожидайте получения оплаты, затем нажмите 
+          <small v-if="step == 3">Ожидайте получения оплаты, затем нажмите 
             Подтвердить и переходите к размещению объявления на вашем ресурсе.
           </small>
         </v-stepper-step>
@@ -103,7 +103,7 @@
           step="4"
         >
           Разместите объявление
-          <small>Разместите объявление клиента на вашем ресурсе и нажмите подтвердить. 
+          <small v-if="step == 4">Разместите объявление клиента на вашем ресурсе и нажмите подтвердить. 
           </small>
         </v-stepper-step>
 
@@ -132,8 +132,7 @@
           step="5"
         >
           Вы разместили объявление
-          <small>Здесь вы увидите количество
-            переходов по объявлению. Как только количество будет равным заказанному, заказ будет считаться выполненным.</small>
+          <small v-if="step == 5">Ожидайте пока это покупатель проверит это</small>
         </v-stepper-step>
 
         <v-stepper-content step="5">
@@ -144,11 +143,28 @@
           ></v-card>
         </v-stepper-content>
 
+        <v-stepper-step
+          :complete="step > 6"
+          step="6"
+        >
+          Покупатель подтвердил размещение
+          <small  v-if="step == 6">Здесь вы увидите количество
+            переходов по объявлению. Как только количество будет равным заказанному, заказ будет считаться выполненным.</small>
+        </v-stepper-step>
 
-        <v-stepper-step step="6">
+        <v-stepper-content step="6">
+          <v-card
+            color="grey lighten-1"
+            class="mb-12"
+            height="200px"
+          ></v-card>
+        </v-stepper-content>
+
+
+        <v-stepper-step step="7">
           Заказ выполнен
         </v-stepper-step>
-        <v-stepper-content step="6">
+        <v-stepper-content step="7">
           <v-card
             color="grey lighten-1"
             class="mb-12"
@@ -158,8 +174,12 @@
 
       </v-stepper>
       </v-col>
-      <v-col cols="4">
-        Мессенджер
+      <v-col cols="12" md="4" class="right-col">      
+        <offer-messenger 
+          :messages="messages"
+          @sendMessage="sendMessage"
+          @setViewed="setViewed"
+        />
       </v-col>
     </v-row>
 
@@ -169,15 +189,20 @@
 <script>
 import ioClientVue from 'socket.io-client';
 import { mapGetters } from 'vuex'
+import OfferMessenger from '~/components/offers/OfferMessenger';
 
 export default {
   layout: 'index',
+  components: {
+    OfferMessenger
+  },
   middleware: ['auth'],
   data: ()=>({
     socket : null,
-    statuses:['', 'created', 'accepted', 'paid', 'paymentСonfirmed', 'placed', 'completed'],
+    statuses:['', 'created', 'accepted', 'paid', 'paymentСonfirmed', 'placed', 'placedСonfirmed', 'completed'],
     offer: null,
-    step: 1
+    step: 1,
+    messages:[],
   }),
   computed: {
     ...mapGetters({
@@ -199,6 +224,38 @@ export default {
 
       }     
     },
+    onMessage(message) {
+      this.messages.push({
+        id: message.id,
+        isFromMe: false,
+        isViewed: null,
+        text: message.text
+      })
+    },
+    async sendMessage(message) {
+      const { data: messageId }  = await this.$axios.post(`/offer/messages/${this.offer.id}`, {
+        text: message
+      })
+      this.messages.push({
+        id: messageId,
+        isFromMe: true,
+        isViewed: null,
+        text: message
+      })
+      this.socket.emit('SEND_OFFER_MESSAGE', {
+        id: messageId,
+        text: message,
+        toOfferId: this.offer.id
+      })
+    },
+    async setViewed(key, message) {
+      this.messages[key].isViewed = true
+      this.socket.emit('SET_OFFER_MESSAGE_AS_VIEWED', {
+        messageId: message.id,
+        toOfferId: this.offer.id
+      })
+      await this.$axios.put(`/offer/messages/${this.offer.id}/${message.id}`)
+    }
   },
   mounted() {
     this.socket = ioClientVue('http://localhost:3070', { autoConnect: false })
@@ -210,8 +267,15 @@ export default {
     this.socket.connect();
 
     this.socket.on('SET_OFFER_STATUS', ({status}) => {
-      console.log(status)
       this.step = this.statuses.findIndex(s=>s==status)
+    });
+
+    this.socket.on('SEND_OFFER_MESSAGE', (message) => {
+      this.onMessage(message)
+    });
+
+    this.socket.on('SET_OFFER_MESSAGE_AS_VIEWED', (messageId) => {
+      this.messages.find(message => message.id == messageId).isViewed = true  
     });
   },
   async fetch() {
@@ -227,14 +291,28 @@ export default {
       this.step = 4
     } else if (this.offer.status == 'placed') {
       this.step = 5
-    } else if (this.offer.status == 'completed') {
+    } else if (this.offer.status == 'placedСonfirmed') {
       this.step = 6
+    } else if (this.offer.status == 'completed') {
+      this.step = 7
     }
+
+    let resMessages = await this.$axios.get(`/offer/messages/${this.$route.params.id}`)
+    this.messages = resMessages.data
   },
   destroyed() {
     this.socket.off("connect");
     this.socket.off("disconnect");
     this.socket.off("SET_OFFER_STATUS");
+    this.socket.off("SEND_OFFER_MESSAGE");
+    this.socket.off("SET_OFFER_MESSAGE_AS_VIEWED");
+    
   },
 }
 </script>
+
+<style scoped>
+.right-col {
+  position: relative;
+}
+</style>

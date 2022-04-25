@@ -130,8 +130,7 @@ export default {
       if (this.validate()) {
         try {
           await this.login(this.form)
-        } catch(e) {
-          console.log(e.response.data)
+        } catch(e) { 
           this.errorsFromServer = true
           this.errorMessage = e.response.data
         }       

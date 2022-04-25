@@ -126,6 +126,22 @@
           <span>Расскажите подробнее о чем ваш сайт или блог. Какие интересы объединяют ваше сообщество или канал. Можно использовать эмодзи.</span>
         </v-tooltip>
 
+        <picker          
+          :style="{ 
+            width: '100%', 
+            height: showEmoj+'px', 
+            transition: 'all .3s' , 
+            opacity: showEmoj ? 1 : 0, 
+            overflow: 'hidden',
+            'margin-left': 'auto',
+            width: '700px',
+          }"
+          color="#009688"
+          :showPreview="false"
+          class="mb-4"
+          @select="addEmoji"
+        />
+
         <v-tooltip left max-width="150">
           <template v-slot:activator="{ on, attrs }">
               <v-select
@@ -160,21 +176,7 @@
           prepend-icon="₽"
           v-model="form.cpc"/>
 
-        <picker          
-          :style="{ 
-            width: '100%', 
-            height: showEmoj+'px', 
-            transition: 'all .3s' , 
-            opacity: showEmoj ? 1 : 0, 
-            overflow: 'hidden',
-            'margin-left': 'auto',
-            width: '700px',
-          }"
-          color="#009688"
-          :showPreview="false"
-          class="mb-4"
-          @select="addEmoji"
-        />
+        
           
       </v-form>
     </v-card-text>
@@ -228,7 +230,6 @@ export default {
   watch: {
     file() {
       this.openCrop = true
-      console.log(this.file)
     },
     dialog (val) {
       val || this.close()

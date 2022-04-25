@@ -134,7 +134,7 @@ export default {
         try {
           this.register(this.form)
         } catch (e) {
-          console.log(e.data)
+          console.warn(e.data)
         }
       }
     },
