@@ -52,7 +52,33 @@
                 </template>
               </v-list-item>
             </v-list-item-group>
-          </v-list>            
+          </v-list>      
+
+          <v-list
+            flat dense
+          >
+            <v-subheader>Расположение</v-subheader>
+
+            <v-list-item-group
+              v-model="selectedLocations"
+              multiple
+              active-class=""
+              @change="findAreas"
+            >
+              <v-list-item v-for="locality in locations" :key="locality.id" :value="locality.id">
+                <template v-slot:default="{ active }">
+                  <v-list-item-action>
+                    <v-checkbox :input-value="active"></v-checkbox>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ locality.locality }}</v-list-item-title>
+                  </v-list-item-content>                  
+                </template>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>      
+
+
         </v-sheet> 
       </v-col>
 
@@ -62,7 +88,11 @@
           rounded="lg"
           class="py-1"
         >
-          <areas-list-guest :areas="areas" @openOfferDialog="openOfferDialog"/>
+          <areas-list-guest v-if="areas.length" :areas="areas" @openOfferDialog="openOfferDialog"/>
+
+          <div v-else class="text-center py-4">
+            Не найдено результатов
+          </div>
           <v-dialog
             v-model="dialogCreateOffer"
             max-width="800px"
@@ -90,9 +120,12 @@ export default {
   data: () => ({
     selectedNetworks:[],
     selectedCategories: [],
+    selectedLocations: [],
     networks: [],
-    areas:[],
     categories: [],
+    locations: [],
+    
+    areas:[],
     dialogCreateOffer: false,
     selectedArea: {}
   }),
@@ -101,6 +134,7 @@ export default {
       let params = {}
       if (this.selectedNetworks.length) params.networksIds = this.selectedNetworks.join(',')
       if (this.selectedCategories.length) params.categoriesIds = this.selectedCategories.join(',')
+       if (this.selectedLocations.length) params.locationsIds = this.selectedLocations.join(',')
       try {
         let res = await this.$axios.get(`/areas/search`, {
           params: params
@@ -116,12 +150,14 @@ export default {
     }
   },
   async mounted() {
-    let res = await Promise.all([
+    let [networks,categories,locations] = await Promise.all([
       this.$axios.get(`/networks`),
-      this.$axios.get(`/categories`)
+      this.$axios.get(`/categories`),
+      this.$axios.get(`/locations`)
     ])
-    this.networks = res[0].data
-    this.categories = res[1].data
+    this.networks = networks.data
+    this.categories = categories.data
+    this.locations = locations.data
     this.findAreas()
   }
 }
