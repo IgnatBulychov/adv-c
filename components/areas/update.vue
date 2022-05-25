@@ -151,7 +151,8 @@
       <span>Расскажите подробнее о чем ваш сайт или блог. Какие интересы объединяют ваше сообщество или канал. Можно использовать эмодзи.</span>
     </v-tooltip>
     
- <picker          
+ <picker      
+ v-if="showEmoj"    
           :style="{ 
             width: '100%', 
             height: showEmoj+'px', 
@@ -189,6 +190,39 @@
         Подберите подходящие тематические теги, чтобы вашу площадку было легче найти
       </span>
     </v-tooltip>
+
+
+
+    
+ <v-tooltip left max-width="150">
+          <template v-slot:activator="{ on, attrs }">
+        <v-combobox
+          v-bind="attrs"
+          v-on="on"
+          :items="adressResults"
+          item-text="locality"
+          item-value="fiasCode"
+          v-model="form.locations"
+          @input="handleInputAdress"
+          multiple
+          chips
+          small-chips
+          outlined
+          dense
+          clearable
+          label="Местоположение (город, область)"
+          placeholder="Вся Россия"
+          :loading="isLoadingAdress"
+          :search-input.sync="searchValueAdress"
+          color="teal"
+          item-color="teal"
+          class="pl-8"
+        ></v-combobox>
+  </template>
+        <span>Укажите где в основном находится ваша аудитория</span>
+      </v-tooltip>
+     
+
     
          <v-text-field
                       label="Цена за клик по рекламе"
@@ -247,19 +281,24 @@ export default {
     symbols: 0,
     cursorPosition: 0,
     networkKey: 0,
-  categories:[],
+    categories:[],
+    searchValueAdress: '',
+    adressResults: [],
+    isLoadingAdress:false,
+    responser: false,
     form: {
       title: '',
       description: '',
       poster: null,
       //services: []
-      
+      locations: [],
       categories: [],
       cpc: null
     },
     isPosterChanges: false,
     file: null,    
     openCrop: false,
+    
     titleRules: [
       v => !!v || 'Введите название',
     ],
@@ -280,23 +319,41 @@ export default {
     dialogDelete (val) {
       val || this.closeDelete()
     },
+    async searchValueAdress() {
+      if (this.responser) {
+        return
+      }
+      this.responser = true
+      setTimeout(async ()=>{
+        this.isLoadingAdress = true
+        let suggestions = await this.$getAdressSuggestion(this.searchValueAdress)    
+
+        this.adressResults = suggestions
+        this.isLoadingAdress = false
+        this.responser = false
+      }, 1000)      
+    }
   },  
   methods: {
     async update() {
       if (!this.$refs.form.validate()) {
         return
       }
+      console.log(this.form) // проблема при ред и города и категории
+
+    //  this.form.categories.map(cat)
+
       await this.$axios.put(`/areas/${this.enterData.id}`, {
         ...this.form,
         isPosterChanges: this.isPosterChanges,
         networkId: this.networks[this.networkKey].id,
       })
-      this.form = {
+     /* this.form = {
         title: '',
         description: '',
         poster: null,
-        services: []
-      }
+        categories: []
+      }*/
       this.$emit('close')
     },
     saveCursor(){
@@ -328,6 +385,9 @@ export default {
       this.isPosterChanges = true
       this.openCrop = false
     }, 
+    handleInputAdress(elements) {
+      this.form.locations = elements
+    }
   },
   async mounted() {
     let res = await Promise.all([

@@ -170,5 +170,6 @@ export default {
   width: 120px;
   height: 120px;
   border-radius: 50%;
+  object-fit: cover;
 }
 </style>

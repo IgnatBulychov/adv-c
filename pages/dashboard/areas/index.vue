@@ -67,7 +67,10 @@ export default {
       this.areas = res.data
     },
     editArea(area) {
-      this.currentAreaEdit = area 
+      this.currentAreaEdit = {
+        ...area,
+        categories: area.categories.map(c=>c.id)
+      } 
       this.dialogUpdate = true
     }
   },
