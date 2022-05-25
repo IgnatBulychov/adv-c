@@ -63,16 +63,16 @@
 
           
   </v-card-title>
-    <div class="pb-3 px-4" v-html="area.description.replace('\n', '<br/>')" />
+    <div class="pb-3 px-4" v-if="area.description" v-html="area.description.replace('\n', '<br/>')" />
 
-<v-card-subtitle>
+<v-card-subtitle v-if="area.url">
 Ссылка на площадку: 
 <a :href="area.url">{{area.href}}</a>
 </v-card-subtitle>
 
 
 
-<v-card-subtitle>
+<v-card-subtitle v-if="area.categories.length">
 Категории: 
     <v-chip
       class="mx-1"
@@ -87,7 +87,7 @@
   </v-card-subtitle>
 
 
-  <v-card-subtitle>
+  <v-card-subtitle v-if="area.locations.length">
   Локация подписчиков: 
     <span
       v-for="(locality, index) in area.locations"

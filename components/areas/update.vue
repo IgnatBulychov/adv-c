@@ -95,24 +95,22 @@
       :upload-handler="cropperHandler"
       v-model="openCrop"/>
 
-<!--
-       <v-radio-group v-model="form.network">
-        <template v-slot:label>
-          <div>
-            Соцсеть:
-          </div>
-        </template>
-        <v-radio v-for="network in networks" :value="network.id" :key="network.id" color="teal">
-          <template v-slot:label>
-            <img :src="`/networks/${network.poster}.png`" class="network-poster">
-            <div class="px-2">
-              <strong class="teal--text">{{ network.title }}</strong>
-            </div>
-          </template>
-        </v-radio>
-      </v-radio-group>
--->
 
+<v-tooltip left max-width="150">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-bind="attrs"
+              v-on="on"
+              outlined
+              label="Ссылка на вашу площадку"
+              v-model="form.url"
+              required
+              color="teal"
+              prepend-icon="mdi-link"
+            />
+          </template>
+          <span>Вставьте ссылку на ваш сайт, блог, сообщество или канал</span>
+        </v-tooltip>
 
               <v-tooltip left max-width="150">
                   <template v-slot:activator="{ on, attrs }">
@@ -290,7 +288,8 @@ export default {
       title: '',
       description: '',
       poster: null,
-      //services: []
+      //services: [],
+      url: '',
       locations: [],
       categories: [],
       cpc: null

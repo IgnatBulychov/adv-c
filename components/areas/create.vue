@@ -4,7 +4,7 @@
       <v-form
         ref="form"    
         lazy-validation
-        class="create-form py-2"
+        class="create-form pt-10"
       >
         <v-tooltip left max-width="150">
           <template v-slot:activator="{ on, attrs }">
@@ -91,6 +91,22 @@
           :upload-handler="cropperHandler"
           v-model="openCrop"
         />
+
+        <v-tooltip left max-width="150">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-bind="attrs"
+              v-on="on"
+              outlined
+              label="Ссылка на вашу площадку"
+              v-model="form.url"
+              required
+              color="teal"
+              prepend-icon="mdi-link"
+            />
+          </template>
+          <span>Вставьте ссылку на ваш сайт, блог, сообщество или канал</span>
+        </v-tooltip>
 
         <v-tooltip left max-width="150">
           <template v-slot:activator="{ on, attrs }">
@@ -248,6 +264,7 @@ export default {
       title: '',
       description: '',
       poster: null,
+      url:'',
       categories: [],
       locations: [],
       cpc: null
@@ -279,7 +296,6 @@ export default {
       setTimeout(async ()=>{
         this.isLoadingAdress = true
         let suggestions = await this.$getAdressSuggestion(this.searchValueAdress)    
-console.log(suggestions)
         this.adressResults = suggestions
         this.isLoadingAdress = false
         this.responser = false
