@@ -67,7 +67,7 @@
 
 <v-card-subtitle v-if="area.url">
 Ссылка на площадку: 
-<a :href="area.url">{{area.href}}</a>
+<a :href="area.url" target="_blank">{{area.url}}</a>
 </v-card-subtitle>
 
 
