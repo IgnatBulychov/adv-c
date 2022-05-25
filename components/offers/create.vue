@@ -9,22 +9,10 @@
         lazy-validation
         class="create-form py-2"
       >
-      <v-alert
-        outlined
-        color="teal"
-        text
-        icon="mdi-account-group-outline"
-      >
-        Площадка: {{ selectedArea.title }}
-      </v-alert>
-      <v-alert
-        outlined
-        color="teal"
-        text
-        icon="mdi-web"
-      >
-        Сеть: {{ selectedArea.network.title }}
-      </v-alert>
+      <div class="pl-8 pb-5">
+        Площадка: <strong>{{ selectedArea.title }}</strong><br>
+        Сеть: <strong>{{ selectedArea.network.title }}</strong>
+      </div>
 
       <div class="d-flex">
 

@@ -13,25 +13,24 @@
           </v-card>
          </v-col>
 
-         <v-col cols="6">
+         <v-col cols="6" class="d-flex justify-center align-center">
 
 
 
 
 <v-card class="mx-2 my-2" width="fit-content">
  
-<v-card-title class="text-center">
+<v-card-title class="d-flex justify-center align-center">
   {{ area.cpc }} ₽
 </v-card-title>
 
   <v-card-subtitle class="text-center">
      цена за клик 
   </v-card-subtitle>
-</v-card>
 
-<v-card class="mx-2 my-2" width="fit-content">
- 
-<v-card-title class="text-center">
+
+
+<v-card-text>
   
   
  <v-btn @click.prevent="dialogCreateOffer = true" color="teal" dark>Заказать</v-btn> 
@@ -48,11 +47,11 @@
             <create-offer :selectedArea="area" @close="()=>{dialogCreateOffer = false;}"/>
           </v-dialog>
 
-
-</v-card-title>
-
+</v-card-text>
 
 </v-card>
+
+
 
          </v-col>
 
@@ -67,10 +66,18 @@
     <div class="pb-3 px-4" v-html="area.description.replace('\n', '<br/>')" />
 
 <v-card-subtitle>
+Ссылка на площадку: 
+<a :href="area.url">{{area.href}}</a>
+</v-card-subtitle>
+
+
+
+<v-card-subtitle>
 Категории: 
     <v-chip
-      class="ma-2"
+      class="mx-1"
       color="primary"
+      small
       v-for="category in area.categories"
       :key="category.id"
     >
@@ -79,8 +86,24 @@
 
   </v-card-subtitle>
 
-    <v-card-subtitle>    
-      <div class="d-flex align-center">
+
+  <v-card-subtitle>
+  Локация подписчиков: 
+    <span
+      v-for="(locality, index) in area.locations"
+      :key="locality.id"
+    >
+    <strong>
+      {{ locality.locality }}<span v-if="area.locations.length < index+1">, </span>
+    </strong>
+    </span>
+
+  </v-card-subtitle>
+
+    <v-card-subtitle  class="d-flex ">  
+
+      Автор:  
+      <span class="d-flex align-center ml-2">
       
         <v-avatar
                 class="mr-1"
@@ -92,34 +115,25 @@
               <div class="b-user-info">
                 {{ area.owner.firstName }} {{ area.owner.lastName }} 
               </div>
-      </div>
+      </span>
 </v-card-subtitle>
 
-</v-card>
- </v-col>
-       </v-row>
 
 
-
-
-<v-card class="mx-2 my-2" width="fit-content">
-  <v-card-title>
-
-     <div class="b-network">
+<v-card-subtitle class="d-flex">
+Сеть:
+ <div class="b-network ml-2">
    
               <v-img :src="area.network.poster" width="18px" height="18px"></v-img>
               <div class="ml-1">
               {{ area.network.title }} 
               </div>  
             </div>
+</v-card-subtitle>
 
- 
-
-              
-
-  </v-card-title>
 </v-card>
-
+ </v-col>
+       </v-row>
 
 
 
@@ -160,5 +174,6 @@ export default {
 .b-network {
   display: flex;
     align-items: center;
+    width: fit-content;
 }
 </style>
