@@ -93,13 +93,50 @@
       class="mb-4"
       @select="addEmoji"/>
 
-      <v-textarea
+
+        <v-tooltip left max-width="150">
+          <template v-slot:activator="{ on }">          
+            <v-file-input
+              @mouseenter.native='on.mouseenter'
+              @mouseleave.native='on.mouseleave'
+              color="teal"
+              label="Постер рекламы"
+              outlined
+              dense
+              v-model="file"
+            ></v-file-input>
+          </template>
+          <span>Постер рекламы</span>
+        </v-tooltip>
+  
+        <avatar-cropper
+          :output-options="{width: 350, height: 350}"
+          :file="file"
+          :cropper-options="{
+                              aspectRatio: 1 / 1,
+                              autoCropArea: 1,
+                              viewMode: 1,
+                              movable: true,
+                              minCropBoxHeight: 100,
+                              minCropBoxWidth: 100,
+                              minCropBoxHeight: 100,
+                              minCropBoxWidth: 100,
+                              minContainerWidth: 400,
+                              minContainerHeight: 300,
+                              zoomable: false,
+                            }"
+          :labels="{submit: 'Сохранить', cancel: 'Отмена'}"
+          :upload-handler="cropperHandler"
+          v-model="openCrop"
+        />
+
+     <!-- <v-textarea
         outlined
         v-model="form.comment"
         label="Сообщение для продавца (не обязательно)"
         color="teal"
         prepend-icon="mdi-android-messages"        
-      ></v-textarea>
+      ></v-textarea> -->
     </v-form>
   </v-card-text>
   <v-card-actions>       
@@ -177,7 +214,7 @@ export default {
       link:'',
       text:'',
       image:null,
-      comment: '',
+      //comment: '',
       status: 'created'
     },
     file: null,    

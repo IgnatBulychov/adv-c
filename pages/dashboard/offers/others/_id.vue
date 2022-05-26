@@ -12,7 +12,7 @@
           step="1"
         >
           Вам поступил заказ
-          <small v-if="step == 1">Если вы готовы разместить следующее объявление заказчика и обещаете предоставить заказанное
+          <small v-if="step == 1">Если вы готовы разместить следующее объявление(ссылку, тексты, изображение) заказчика и обещаете предоставить заказанное
             количество переходов на ссылки, нажмите Подтвердить. Если не согласны, нажмите Отклонить и договоритесь с 
             заказчиком через мессенджер о других условиях сделки.
           </small>
@@ -21,23 +21,68 @@
         <v-stepper-content step="1" v-if="offer">
           <v-card
             color="grey lighten-4"
-            class="mb-12"
-            height="100px"
+            class="mb-3"
           >
-            Площадка: {{ offer.area.title }} <br>
-            Заказчик: <nuxt-link :to="`/user/${offer.buyer.id}`"> {{ offer.buyer.firstName }} {{ offer.buyer.lastName }} </nuxt-link> <br>
-            Количество кликов: {{ offer.quantity }}
-            Стоимость заказа: {{ offer.quantity * offer.area.cpc }} ₽
+           <v-card-text>
+            Ваша площадка: <strong> {{ offer.area.title }} </strong> <br> 
+            Заказчик: <strong> <nuxt-link :to="`/user/${offer.buyer.id}`"> {{ offer.buyer.firstName }} {{ offer.buyer.lastName }} </nuxt-link></strong> <br>
+            Количество кликов: <strong> {{ offer.quantity }} </strong> <br>
+            Стоимость заказа: <strong> {{ offer.quantity * offer.area.cpc }} ₽</strong>
+           </v-card-text>
           </v-card>
           <v-card
             color="grey lighten-4"
             class="mb-12"
-            height="100px"
+            
           >
-            Объявление закзчика:
-            {{ offer.title }}
-            {{ offer.text }}
-            <v-img width="100" :src=" offer.text"/>
+          <v-card-text>
+            
+
+<v-row>
+  <v-col cols="4">
+
+    
+            <div class="py-2">
+              Иллюстрация:
+            </div>
+
+            <v-img 
+              :src="offer.image"/>
+          
+  </v-col>
+  <v-col>
+        
+        <div class="py-2">
+            Объявление:
+            </div>
+            <v-text-field
+              outlined
+              label="Ссылка"
+              color="teal"
+              :value="offer.link"
+              readonly
+            ></v-text-field>
+            
+            <v-text-field
+              outlined
+              label="Заголовок объявления"
+              color="teal"
+              :value="offer.title"
+              readonly
+            ></v-text-field>
+
+
+            <v-textarea
+              outlined
+              label="Текст объявления"
+              color="teal"
+              :value="offer.text"
+              readonly
+            ></v-textarea>
+  </v-col>
+</v-row>   
+           
+          </v-card-text>
           </v-card>
           <v-btn
             color="primary"
@@ -45,7 +90,7 @@
           >
             Подтвердить
           </v-btn>
-          <v-btn text>
+          <v-btn text @click="confirmDialog = true">
             Отклонить
           </v-btn>
         </v-stepper-content>
@@ -105,9 +150,78 @@
           Разместите объявление
           <small v-if="step == 4">Разместите объявление клиента на вашем ресурсе и нажмите подтвердить. 
           </small>
+
         </v-stepper-step>
 
         <v-stepper-content step="4">
+
+
+          
+
+ <v-card
+            color="grey lighten-4"
+            class="mb-12"
+            
+          >
+          <v-card-text>
+            <div class="py-2">
+            Объявление закзчика:
+            </div>
+
+            <v-text-field
+              outlined
+              label="Ссылка"
+              color="teal"
+              :value="offer.link"
+              readonly
+              append-icon="mdi-content-copy"
+              @click:append="copy(offer.link)"
+            ></v-text-field>
+            
+            <v-text-field
+              outlined
+              label="Заголовок объявления"
+              color="teal"
+              :value="offer.title"
+              readonly
+              append-icon="mdi-content-copy"
+              @click:append="copy(offer.title)"
+            ></v-text-field>
+
+
+            <v-textarea
+              outlined
+              label="Текст объявления"
+              color="teal"
+              :value="offer.text"
+              readonly
+               append-icon="mdi-content-copy"
+              @click:append="copy(offer.text)"
+            ></v-textarea>
+
+            <v-img width="200"
+              :src="offer.image"/>
+
+              <v-btn
+              color="success"
+              class="ma-2 white--text"
+              @click="loadImage"
+            >
+              Загрузить
+              <v-icon
+                right
+                dark
+              >
+                mdi-cloud-download
+              </v-icon>
+            </v-btn>
+           
+           
+          </v-card-text>
+          </v-card>
+
+
+
           <v-card
             color="grey lighten-1"
             class="mb-12"
@@ -183,6 +297,72 @@
       </v-col>
     </v-row>
 
+
+
+     <v-snackbar
+    v-model="copySuccess"
+    :timeout="3000"
+    :top="true"
+    color="success">
+    Скопировано
+
+    <template v-slot:action="{ attrs }">
+      <v-btn
+        color="white"
+        text icon
+        v-bind="attrs"
+        @click="copySuccess = false"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </template>
+  </v-snackbar>
+
+
+
+
+
+
+
+
+
+
+
+    <v-dialog
+      v-model="confirmDialog"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Вы уверены что хотите отменить предложение?
+        </v-card-title>
+
+        <v-card-text>
+          Этот заказ будет полностью заркыт. 
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="confirmDialog = false"
+          >
+            Нет
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="confirmDialog = false"
+          >
+            Да, отменить
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
   </div>
 </template>
 
@@ -203,6 +383,8 @@ export default {
     offer: null,
     step: 1,
     messages:[],
+    copySuccess: false,
+    confirmDialog: false
   }),
   computed: {
     ...mapGetters({
@@ -255,7 +437,16 @@ export default {
         toOfferId: this.offer.id
       })
       await this.$axios.put(`/offer/messages/${this.offer.id}/${message.id}`)
-    }
+    },
+    async copy(text) {
+      try {
+        await this.$copyText(text);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.copySuccess = true
+      }
+    },
   },
   mounted() {
     this.socket = ioClientVue('http://localhost:3070', { autoConnect: false })

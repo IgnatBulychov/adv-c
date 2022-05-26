@@ -5,7 +5,8 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/dotenv',
-    'cookie-universal-nuxt'
+    'cookie-universal-nuxt',
+    'nuxt-clipboard2'
   ],
   buildModules: [
     [      
