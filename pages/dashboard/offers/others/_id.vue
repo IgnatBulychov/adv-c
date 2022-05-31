@@ -1,12 +1,7 @@
 <template>
   <div v-if="offer && !offer.isMine" class="px-1">
     <v-row class="py-2 px-2">
-
-
-      <v-col  cols="12" md="8">
-
-        
-        
+      <v-col  cols="12" md="8">        
         <v-card class="mb-2">
           <v-card-text class="d-flex">
             <div>
@@ -33,11 +28,17 @@
         </v-card>
 
 
-        <v-card  v-if="offer.status == 'canceled' || offer.status == 'canceledByBuyer' || offer.status == 'canceledBySeller'" class="mb-2">
-          <v-card-text>
+      <v-expansion-panels>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            Детали заказа
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
             <offer-info :offer="offer" :isMine="false"/>
-          </v-card-text>
-        </v-card>
+            
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
 
       <v-stepper
         v-model="step"
