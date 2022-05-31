@@ -1,7 +1,43 @@
 <template>
   <div v-if="offer && !offer.isMine" class="px-1">
-    <v-row>
-      <v-col cols="12" md="8">
+    <v-row class="py-2 px-2">
+
+
+      <v-col  cols="12" md="8">
+
+        
+        
+        <v-card class="mb-2">
+          <v-card-text class="d-flex">
+            <div>
+              ID заказа: <strong> {{ offer.id }} </strong> <br>
+              Статус:  <strong> {{ statuses[offer.status] }} </strong> 
+            </div>
+            <v-spacer/>
+            <div >
+              <v-btn
+                v-if="!(offer.status == 'completed' || offer.status == 'canceled' || offer.status == 'canceledByBuyer' || offer.status == 'canceledBySeller')" 
+                text
+                @click="confirmDialogClose = true">
+                Отменить заказ
+              </v-btn>         
+              <v-btn 
+                v-if="offer.status != 'created' && offer.status != 'accepted' && offer.status != 'completed'" 
+                text
+                color="teal"
+                @click="reviewDialog = true">
+                Оставить отзыв
+              </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
+
+
+        <v-card  v-if="offer.status == 'canceled' || offer.status == 'canceledByBuyer' || offer.status == 'canceledBySeller'" class="mb-2">
+          <v-card-text>
+            <offer-info :offer="offer" :isMine="false"/>
+          </v-card-text>
+        </v-card>
 
       <v-stepper
         v-model="step"
@@ -18,79 +54,20 @@
           </small>
         </v-stepper-step>
 
-        <v-stepper-content step="1" v-if="offer">
-          <v-card
-            color="grey lighten-4"
-            class="mb-3"
-          >
-           <v-card-text>
-            Ваша площадка: <strong> {{ offer.area.title }} </strong> <br> 
-            Заказчик: <strong> <nuxt-link :to="`/user/${offer.buyer.id}`"> {{ offer.buyer.firstName }} {{ offer.buyer.lastName }} </nuxt-link></strong> <br>
-            Количество кликов: <strong> {{ offer.quantity }} </strong> <br>
-            Стоимость заказа: <strong> {{ offer.quantity * offer.area.cpc }} ₽</strong>
-           </v-card-text>
-          </v-card>
-          <v-card
-            color="grey lighten-4"
-            class="mb-12"
-            
-          >
-          <v-card-text>
-            
-
-<v-row>
-  <v-col cols="4">
-
-    
-            <div class="py-2">
-              Иллюстрация:
-            </div>
-
-            <v-img 
-              :src="offer.image"/>
+        <v-stepper-content step="1">
           
-  </v-col>
-  <v-col>
-        
-        <div class="py-2">
-            Объявление:
-            </div>
-            <v-text-field
-              outlined
-              label="Ссылка"
-              color="teal"
-              :value="offer.link"
-              readonly
-            ></v-text-field>
-            
-            <v-text-field
-              outlined
-              label="Заголовок объявления"
-              color="teal"
-              :value="offer.title"
-              readonly
-            ></v-text-field>
+          
 
-
-            <v-textarea
-              outlined
-              label="Текст объявления"
-              color="teal"
-              :value="offer.text"
-              readonly
-            ></v-textarea>
-  </v-col>
-</v-row>   
+            <offer-info :offer="offer" :isMine="false"/>
            
-          </v-card-text>
-          </v-card>
+           
           <v-btn
             color="primary"
             @click="setStatus('accepted')"
           >
-            Подтвердить
+            Принять
           </v-btn>
-          <v-btn text @click="confirmDialog = true">
+          <v-btn text @click="confirmDialogClose = true">
             Отклонить
           </v-btn>
         </v-stepper-content>
@@ -105,41 +82,25 @@
         </v-stepper-step>
 
         <v-stepper-content step="2">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          >
-           <v-card-text>
-              
-           </v-card-text>
-          </v-card>
+         
         </v-stepper-content>
 
         <v-stepper-step
           :complete="step > 3"
           step="3"
         >
-           Заказ оплачен заказчиком
+          Заказчик отправил средства
           <small v-if="step == 3">Ожидайте получения оплаты, затем нажмите 
             Подтвердить и переходите к размещению объявления на вашем ресурсе.
           </small>
         </v-stepper-step>
 
         <v-stepper-content step="3">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
-           <v-btn
+          <v-btn
             color="primary"
             @click="setStatus('paymentСonfirmed')"
           >
             Подтвердить получение оплаты
-          </v-btn>
-          <v-btn text>
-            Оплата не получена
           </v-btn>
         </v-stepper-content>
 
@@ -155,89 +116,13 @@
 
         <v-stepper-content step="4">
 
-
+            <offer-info :offer="offer" showCopy  :isMine="false"/>
           
-
- <v-card
-            color="grey lighten-4"
-            class="mb-12"
-            
-          >
-          <v-card-text>
-            <div class="py-2">
-            Объявление закзчика:
-            </div>
-
-            <v-text-field
-              outlined
-              label="Ссылка"
-              color="teal"
-              :value="offer.link"
-              readonly
-              append-icon="mdi-content-copy"
-              @click:append="copy(offer.link)"
-            ></v-text-field>
-            
-            <v-text-field
-              outlined
-              label="Заголовок объявления"
-              color="teal"
-              :value="offer.title"
-              readonly
-              append-icon="mdi-content-copy"
-              @click:append="copy(offer.title)"
-            ></v-text-field>
-
-
-            <v-textarea
-              outlined
-              label="Текст объявления"
-              color="teal"
-              :value="offer.text"
-              readonly
-               append-icon="mdi-content-copy"
-              @click:append="copy(offer.text)"
-            ></v-textarea>
-
-            <v-img width="200"
-              :src="offer.image"/>
-
-              <v-btn
-              color="success"
-              class="ma-2 white--text"
-              @click="loadImage"
-            >
-              Загрузить
-              <v-icon
-                right
-                dark
-              >
-                mdi-cloud-download
-              </v-icon>
-            </v-btn>
-           
-           
-          </v-card-text>
-          </v-card>
-
-
-
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
           <v-btn
             color="primary"
             @click="setStatus('placed')"
           >
             Подтвердить размещение
-          </v-btn>
-          <v-btn
-            text
-            @click="step = 4"
-          >
-            Отменить заказ
           </v-btn>
         </v-stepper-content>
 
@@ -250,11 +135,7 @@
         </v-stepper-step>
 
         <v-stepper-content step="5">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
+          
         </v-stepper-content>
 
         <v-stepper-step
@@ -267,11 +148,7 @@
         </v-stepper-step>
 
         <v-stepper-content step="6">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
+
         </v-stepper-content>
 
 
@@ -279,11 +156,9 @@
           Заказ выполнен
         </v-stepper-step>
         <v-stepper-content step="7">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
+           <create-review
+        :offer="offer"
+      />
         </v-stepper-content>
 
       </v-stepper>
@@ -299,69 +174,55 @@
 
 
 
-     <v-snackbar
-    v-model="copySuccess"
-    :timeout="3000"
-    :top="true"
-    color="success">
-    Скопировано
-
-    <template v-slot:action="{ attrs }">
-      <v-btn
-        color="white"
-        text icon
-        v-bind="attrs"
-        @click="copySuccess = false"
-      >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </template>
-  </v-snackbar>
 
 
+    <v-dialog
+      v-model="confirmDialogClose"
+      width="500px"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Вы уверены что хотите заркыть заказ?
+        </v-card-title>
 
+        <v-card-text>
+          Этот заказ будет полностью отменен.
+        </v-card-text>
 
+        <v-card-actions>
+          <v-btn
+            color="gray darken-1"
+            text
+            @click="confirmDialogClose = false"
+          >
+            Нет
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="setStatus('canceledBySeller'); confirmDialogClose = false"
+          >
+            Да, отменить и закрыть
+          </v-btn>
+        </v-card-actions>
 
-
-
-
+      </v-card>
+    </v-dialog>
 
 
 
     <v-dialog
-      v-model="confirmDialog"
+      v-model="reviewDialog"
+      width="500px"
     >
-      <v-card>
-        <v-card-title class="text-h5">
-          Вы уверены что хотите отменить предложение?
-        </v-card-title>
+    
+    <create-review
+        :offer="offer"
+      />
+        
 
-        <v-card-text>
-          Этот заказ будет полностью заркыт. 
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            color="green darken-1"
-            text
-            @click="confirmDialog = false"
-          >
-            Нет
-          </v-btn>
-
-          <v-btn
-            color="green darken-1"
-            text
-            @click="confirmDialog = false"
-          >
-            Да, отменить
-          </v-btn>
-        </v-card-actions>
-      </v-card>
     </v-dialog>
-
 
   </div>
 </template>
@@ -370,21 +231,36 @@
 import ioClientVue from 'socket.io-client';
 import { mapGetters } from 'vuex'
 import OfferMessenger from '~/components/offers/OfferMessenger';
+import OfferInfo from '~/components/offers/OfferInfo';
+import CreateReview from '~/components/offers/CreateReview';
 
 export default {
   layout: 'index',
   components: {
-    OfferMessenger
+    OfferMessenger, OfferInfo, CreateReview
   },
   middleware: ['auth'],
   data: ()=>({
     socket : null,
-    statuses:['', 'created', 'accepted', 'paid', 'paymentСonfirmed', 'placed', 'placedСonfirmed', 'completed'],
+    statuses: {
+      '' : 'Создан',
+      'created' : 'Создан',
+      'accepted' : 'Принят продавцом',
+      'paid' : 'Покупатель отправил оплату',
+      'paymentСonfirmed' : 'Продавец получил оплату',
+      'placed' : 'Продавец разместил рекламу',
+      'placedСonfirmed' : 'Покупатель подтвержил размещение рекламы',
+      'completed' : 'Заказ выполнен',
+      'canceled' : 'Заказ отменен',
+      'canceledByBuyer' : 'Заказ отменен покупателем',
+      'canceledBySeller' : 'Заказ отменен продавцом'
+    },
     offer: null,
     step: 1,
-    messages:[],
-    copySuccess: false,
-    confirmDialog: false
+    messages:[],    
+    confirmDialogClose: false,
+    reviewDialog: false,
+    
   }),
   computed: {
     ...mapGetters({
@@ -392,14 +268,20 @@ export default {
     })
   },
   methods: {
-    async setStatus(status) {
+    async setStatus(status) { 
       try {
-        await this.$axios.put(`/offer/${this.$route.params.id}`, {
+        let { data: newStatus } = await this.$axios.put(`/offer/${this.$route.params.id}`, {
           status
         })
-        this.step++
+        
+        if (newStatus != 'canceledBySeller' && newStatus != 'canceledByBuyer' && newStatus != 'canceled') {
+          this.step = Object.keys(this.statuses).findIndex(s=>s == newStatus)
+        } else {
+          this.step = 0
+        }
+        this.offer.status = newStatus
         this.socket.emit('SET_OFFER_STATUS', {
-          status: status,
+          status: newStatus,
           toOfferId: this.offer.id
         })
       } catch (e) {
@@ -438,15 +320,6 @@ export default {
       })
       await this.$axios.put(`/offer/messages/${this.offer.id}/${message.id}`)
     },
-    async copy(text) {
-      try {
-        await this.$copyText(text);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        this.copySuccess = true
-      }
-    },
   },
   mounted() {
     this.socket = ioClientVue('http://localhost:3070', { autoConnect: false })
@@ -458,7 +331,12 @@ export default {
     this.socket.connect();
 
     this.socket.on('SET_OFFER_STATUS', ({status}) => {
-      this.step = this.statuses.findIndex(s=>s==status)
+      if (status != 'canceledBySeller' && status != 'canceledByBuyer' && status != 'canceled') {
+        this.step = Object.keys(this.statuses).findIndex(s=>s == status)
+      } else {
+        this.step = 0
+      }    
+      this.offer.status = status
     });
 
     this.socket.on('SEND_OFFER_MESSAGE', (message) => {
@@ -486,6 +364,8 @@ export default {
       this.step = 6
     } else if (this.offer.status == 'completed') {
       this.step = 7
+    } else if (this.offer.status == 'canceledBySeller' || this.offer.status == 'canceledByBuyer' || this.offer.status == 'canceled')  {
+      this.step = 0
     }
 
     let resMessages = await this.$axios.get(`/offer/messages/${this.$route.params.id}`)

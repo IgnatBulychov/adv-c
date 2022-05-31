@@ -1,169 +1,214 @@
 <template>
   <div v-if="offer && offer.isMine">
-    <v-row>
+    <v-row class="py-2 px-2">
+
       <v-col cols="12" md="8">
 
-      <v-stepper
-        v-model="step"
-        vertical
-      >
-        <v-stepper-step
-          :complete="step > 1"
-          step="1"
+      
+
+        <v-card class="mb-2">
+          <v-card-text class="d-flex">
+            <div>
+              ID заказа: <strong> {{ offer.id }} </strong> <br>
+              Статус:  <strong> {{ statuses[offer.status] }} </strong> 
+            </div>
+            
+            <v-spacer/>
+            <div >
+              <v-btn
+                v-if="!(offer.status == 'completed' || offer.status == 'canceled' || offer.status == 'canceledByBuyer' || offer.status == 'canceledBySeller')" 
+                text
+                @click="confirmDialogClose = true">
+                Отменить заказ
+              </v-btn>         
+              <v-btn 
+                v-if="offer.status != 'created' && offer.status != 'accepted' && offer.status != 'completed'" 
+                text
+                 color="teal"
+                 @click="reviewDialog = true">
+                Оставить отзыв
+              </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
+
+          <v-card  v-if="offer.status == 'canceled' || offer.status == 'canceledByBuyer' || offer.status == 'canceledBySeller'" class="mb-2">
+          <v-card-text>
+            <offer-info :offer="offer" :isMine="false"/>
+          </v-card-text>
+        </v-card>
+
+        <v-stepper
+          v-model="step"
+          vertical
         >
-          Вы создали заказ
-          <small v-if="step == 1">Ожидайте, пока другая строная примет или отклонит предложение</small>
-        </v-stepper-step>
-
-        <v-stepper-content step="1">
-          <v-card
-            color="grey lighten-4"
-            class="mb-12"
-            height="100px"
+          <v-stepper-step
+            :complete="step > 1"
+            step="1"
           >
-            Площадка: {{ offer.area.title }} <br>
-            Владелец: <nuxt-link :to="`/user/${offer.seller.id}`"> {{ offer.seller.firstName }} {{ offer.seller.lastName }} </nuxt-link> <br>
-            Стоимость заказа: {{ offer.quantity * offer.area.cpc }} ₽
-          </v-card>
-          <v-card
-            color="grey lighten-4"
-            class="mb-12"
-            height="100px"
-          >
-            Ваше объявление:
-            {{ offer.title }}
-            {{ offer.text }}
-            <v-img width="100" :src=" offer.text"/>
-          </v-card>
-        </v-stepper-content>
+            Вы создали заказ
+            <small v-if="step == 1">Ожидайте, пока другая строная примет или отклонит предложение</small>
+          </v-stepper-step>
 
-        <v-stepper-step
-          :complete="step > 2"
-          step="2"
-        >
-          Заказ принят
-          <small v-if="step == 2">Продавец принял ваш заказ, произведите оплату. После того как вы отпраивите средства продавцу, нажмите Оплачено</small>
-        </v-stepper-step>
+          <v-stepper-content step="1">
+          
+            <offer-info :offer="offer" :isMine="true"></offer-info>
 
-        <v-stepper-content step="2">
-           <!--<v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
+          </v-stepper-content>
+
+          <v-stepper-step
+            :complete="step > 2"
+            step="2"
           >
-           <v-card-text>
-             Средства будут заморожены, и поступят продавцу когда система
-              зафиксирует полное количество переходов по вашему объявлению или если вы сами подтвердите получение услуги
-           </v-card-text>
-          </v-card>-->
+            Заказ принят
+            <small v-if="step == 2">Продавец принял ваш заказ, произведите оплату. После того как вы отправите средства продавцу, нажмите Оплачено</small>
+          </v-stepper-step>
+
+          <v-stepper-content step="2">
+            
+            <v-btn
+              color="primary"
+              @click="setStatus('paid')"
+            >
+              Оплачено
+            </v-btn>
+            
+          </v-stepper-content>
+
+          <v-stepper-step
+            :complete="step > 3"
+            step="3"
+          >
+            Заказ оплачен
+            <small  v-if="step == 3">Ожидайте пока продавец подтвердит получение оплаты</small>
+          </v-stepper-step>
+
+          <v-stepper-content step="3">
+          
+          </v-stepper-content>
+
+          <v-stepper-step
+            :complete="step > 4"
+            step="4"
+          >
+            Оплата получена
+            <small  v-if="step == 4">Ожидайте пока продавец разместит ваше объявление</small>
+          </v-stepper-step>
+
+          <v-stepper-content step="4">
+            
+          </v-stepper-content>
+
+          <v-stepper-step
+            :complete="step > 5"
+            step="5"
+          >
+            Ваше объявление размещено
+            <small v-if="step == 5">Проверьте, что оно находится на заказанной вами плащадке и нажмите подтвердить</small>
+          </v-stepper-step>
+
+          <v-stepper-content step="5">
+            <v-btn
+              color="primary"
+              @click="setStatus('placedСonfirmed')"
+            >
+              Подтвердить
+            </v-btn>
+          </v-stepper-content>
+
+          <v-stepper-step
+            :complete="step > 6"
+            step="6"
+          >
+            Ваше объявление размещено
+            <small v-if="step == 6">Следите за тем как переходят по вашему обьявлению</small>
+          </v-stepper-step>
+
+          <v-stepper-content step="6">
+            <v-card
+              color="grey lighten-1"
+              class="mb-12"
+              height="200px"
+            ></v-card>
+            <v-btn
+              color="primary"
+              @click="setStatus('completed')"
+            >
+              Подтвердить выполнение
+            </v-btn>
+          </v-stepper-content>
+
+
+          <v-stepper-step step="7">
+            Заказ выполнен
+          </v-stepper-step>
+          <v-stepper-content step="7">
+            
+            <create-review
+            :offer="offer"/>
+
+          </v-stepper-content>
+        </v-stepper>
+        </v-col>
+        <v-col cols="12" md="4" class="right-col">
+          <offer-messenger 
+            :messages="messages"
+            @sendMessage="sendMessage"
+            @setViewed="setViewed"
+          />
+        </v-col>
+      </v-row>
+
+
+
+
+    <v-dialog
+      v-model="confirmDialogClose"
+      width="500px"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Вы уверены что хотите отменить заказ?
+        </v-card-title>
+
+        <v-card-text>
+          Этот заказ будет полностью заркыт.
+        </v-card-text>
+
+        <v-card-actions>
           <v-btn
-            color="primary"
-            @click="setStatus('paid')"
+            color="gray darken-1"
+            text
+            @click="confirmDialogClose = false"
           >
-            Оплачено
+            Нет
           </v-btn>
-          <v-btn text>
-            Отменить заказ
-          </v-btn>
-        </v-stepper-content>
-
-        <v-stepper-step
-          :complete="step > 3"
-          step="3"
-        >
-          Заказ оплачен
-          <small  v-if="step == 3">Ожидайте пока продавец подтвердит получение оплаты</small>
-        </v-stepper-step>
-
-        <v-stepper-content step="3">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
-        </v-stepper-content>
-
-        <v-stepper-step
-          :complete="step > 4"
-          step="4"
-        >
-          Оплата получена
-          <small  v-if="step == 4">Ожидайте пока продавец разместит ваше объявление</small>
-        </v-stepper-step>
-
-        <v-stepper-content step="4">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
-        </v-stepper-content>
-
-        <v-stepper-step
-          :complete="step > 5"
-          step="5"
-        >
-          Ваше объявление размещено
-          <small v-if="step == 5">Проверьте, что оно находится на заказанной вами плащадке и нажмите подтвердить</small>
-        </v-stepper-step>
-
-        <v-stepper-content step="5">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
+          <v-spacer></v-spacer>
           <v-btn
-            color="primary"
-            @click="setStatus('placedСonfirmed')"
+            color="green darken-1"
+            text
+            @click="setStatus('canceledByBuyer'); confirmDialogClose = false"
           >
-            Подтвердить
+            Да, отменить и закрыть
           </v-btn>
-        </v-stepper-content>
+        </v-card-actions>
 
-        <v-stepper-step
-          :complete="step > 6"
-          step="6"
-        >
-          Ваше объявление размещено
-          <small v-if="step == 6">Следите за тем как переходят по вашему обьявлению</small>
-        </v-stepper-step>
-
-        <v-stepper-content step="6">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
-          <v-btn
-            color="primary"
-            @click="setStatus('completed')"
-          >
-            Подтвердить выполнение досрочно
-          </v-btn>
-        </v-stepper-content>
+      </v-card>
+    </v-dialog>
 
 
-        <v-stepper-step step="7">
-          Заказ выполнен
-        </v-stepper-step>
-        <v-stepper-content step="7">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
-        </v-stepper-content>
-      </v-stepper>
-      </v-col>
-      <v-col cols="12" md="4" class="right-col">
-        <offer-messenger 
-          :messages="messages"
-          @sendMessage="sendMessage"
-          @setViewed="setViewed"
-        />
-      </v-col>
-    </v-row>
+
+    <v-dialog
+      v-model="reviewDialog"
+      width="500px"
+    >
+      
+      <create-review
+        :offer="offer"
+      />
+
+    </v-dialog>
+
 
   </div>
 </template>
@@ -172,18 +217,37 @@
 import ioClientVue from 'socket.io-client';
 import OfferMessenger from '~/components/offers/OfferMessenger';
 import { mapGetters } from 'vuex'
+import OfferInfo from '~/components/offers/OfferInfo';
+import CreateReview from '~/components/offers/CreateReview';
+
+
 export default {
   layout: 'index',
   middleware: ['auth'],
   components: {
-    OfferMessenger
+    OfferMessenger,OfferInfo,CreateReview
   },
   data: ()=>({    
     socket : null,
-    statuses:['','created', 'accepted', 'paid', 'paymentСonfirmed', 'placed', 'placedСonfirmed' ,'completed'],
+    statuses: {
+      '' : '',
+      'created' : 'Создан',
+      'accepted' : 'Принят продавцом',
+      'paid' : 'Покупатель отправил оплату',
+      'paymentСonfirmed' : 'Продавец получил оплату',
+      'placed' : 'Продавец разместил рекламу',
+      'placedСonfirmed' : 'Покупатель подтвержил размещение рекламы',
+      'completed' : 'Заказ выполнен',
+      'canceled' : 'Заказ отменен',
+      'canceledByBuyer' : 'Заказ отменен покупателем',
+      'canceledBySeller' : 'Заказ отменен продавцом'
+    },
     offer: null,
     step: 1,
     messages:[],
+    confirmDialogClose: false,
+    reviewDialog: false,
+    
   }),
   computed: {
     ...mapGetters({
@@ -193,12 +257,18 @@ export default {
   methods: {
     async setStatus(status) {
       try {
-        await this.$axios.put(`/offer/${this.$route.params.id}`, {
+        let { data: newStatus } = await this.$axios.put(`/offer/${this.$route.params.id}`, {
           status
         })
-        this.step++
+        
+        if (newStatus != 'canceledBySeller' && newStatus != 'canceledByBuyer' && newStatus != 'canceled') {
+          this.step = Object.keys(this.statuses).findIndex(s=>s == newStatus)
+        } else {
+          this.step = 0
+        }
+        this.offer.status = newStatus
         this.socket.emit('SET_OFFER_STATUS', {
-          status: status,
+          status: newStatus,
           toOfferId: this.offer.id
         })
       } catch (e) {
@@ -249,7 +319,12 @@ export default {
     this.socket.connect();
     
     this.socket.on('SET_OFFER_STATUS', ({status}) => {
-      this.step = this.statuses.findIndex(s=>s==status)
+      if (status != 'canceledBySeller' && status != 'canceledByBuyer' && status != 'canceled') {
+        this.step = Object.keys(this.statuses).findIndex(s=>s == status)
+      } else {
+        this.step = 0
+      }     
+      this.offer.status = status
     });
 
     this.socket.on('SEND_OFFER_MESSAGE', (message) => {
@@ -277,6 +352,8 @@ export default {
       this.step = 6
     } else if (this.offer.status == 'completed') {
       this.step = 7
+    } else if (this.offer.status == 'canceledBySeller' || this.offer.status == 'canceledByBuyer' || this.offer.status == 'canceled')  {
+      this.step = 0
     }
 
     let resMessages = await this.$axios.get(`/offer/messages/${this.$route.params.id}`)

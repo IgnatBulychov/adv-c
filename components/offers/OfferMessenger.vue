@@ -77,6 +77,10 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border: 2px solid #b5babf;
+  padding: 10px 10px 0px 5px;
+  border-radius: 4px;
+  flex-direction: column;
 }
 
 .b-messages {
