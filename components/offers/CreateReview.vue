@@ -49,7 +49,6 @@
             color="yellow darken-3"
             background-color="grey darken-1"
             empty-icon="$ratingFull"
-            half-increments
             hover
             large
           ></v-rating>
@@ -71,6 +70,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'CreateReview',
   props: {
@@ -84,7 +84,24 @@ export default {
       value: 0
     }
   }),
+  computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    })
+  },
   methods: {
+    send() {
+      this.$emit('closeReviewDialog')
+      if (this.review.id) {
+        this.$axios.put(`/reviews/${this.review.id}`, {
+          ...this.review
+        })  
+      } else {
+        this.$axios.post(`/reviews/${this.offer.id}`, {
+          ...this.review
+        })  
+      }          
+    },
     setImpression(impression) {
       if (impression == 'like') {
         if (this.review.value == 5) {
@@ -101,9 +118,18 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$parent.reviewDialog = false
-    this.$axios.post('/reviews')
+  async fetch() {
+    let { data: { reviews } } = await this.$axios.get(`/reviews/${this.offer.id}`)
+    reviews.forEach(review => {
+      if (review.authorId == this.user.id) {
+        this.review = {
+          id: review.id,
+          text: review.review,
+          value: review.stars
+        }
+      }
+    });
   }
+  
 }
 </script>

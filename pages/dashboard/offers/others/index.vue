@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import statuses from '~/constants/offerStatuses'
 export default {
   layout: 'index',
   middleware: ['auth'],
@@ -52,9 +53,7 @@ export default {
         { text: 'Статус', value: 'status', sortable:false },
         { text: 'Дата', value: 'createdAt' , sortable:false},
       ],
-      statuses:{
-        created: 'создан'
-      }
+      statuses
     }
   },
   methods: {

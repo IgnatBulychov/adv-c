@@ -9,13 +9,7 @@
               Статус:  <strong> {{ statuses[offer.status] }} </strong> 
             </div>
             <v-spacer/>
-            <div >
-              <v-btn
-                v-if="!(offer.status == 'completed' || offer.status == 'canceled' || offer.status == 'canceledByBuyer' || offer.status == 'canceledBySeller')" 
-                text
-                @click="confirmDialogClose = true">
-                Отменить заказ
-              </v-btn>         
+            <div >                     
               <v-btn 
                 v-if="offer.status != 'created' && offer.status != 'accepted' && offer.status != 'completed'" 
                 text
@@ -23,6 +17,12 @@
                 @click="reviewDialog = true">
                 Оставить отзыв
               </v-btn>
+              <v-btn
+                v-if="!(offer.status == 'completed' || offer.status == 'canceled' || offer.status == 'canceledByBuyer' || offer.status == 'canceledBySeller')" 
+                text
+                @click="confirmDialogClose = true">
+                Отменить заказ
+              </v-btn>  
             </div>
           </v-card-text>
         </v-card>
@@ -159,6 +159,7 @@
         <v-stepper-content step="7">
            <create-review
         :offer="offer"
+         @closeReviewDialog="reviewDialog = false"
       />
         </v-stepper-content>
 
@@ -220,6 +221,7 @@
     
     <create-review
         :offer="offer"
+        @closeReviewDialog="reviewDialog = false"
       />
         
 
@@ -234,6 +236,7 @@ import { mapGetters } from 'vuex'
 import OfferMessenger from '~/components/offers/OfferMessenger';
 import OfferInfo from '~/components/offers/OfferInfo';
 import CreateReview from '~/components/offers/CreateReview';
+import statuses from '~/constants/offerStatuses'
 
 export default {
   layout: 'index',
@@ -243,19 +246,7 @@ export default {
   middleware: ['auth'],
   data: ()=>({
     socket : null,
-    statuses: {
-      '' : 'Создан',
-      'created' : 'Создан',
-      'accepted' : 'Принят продавцом',
-      'paid' : 'Покупатель отправил оплату',
-      'paymentСonfirmed' : 'Продавец получил оплату',
-      'placed' : 'Продавец разместил рекламу',
-      'placedСonfirmed' : 'Покупатель подтвержил размещение рекламы',
-      'completed' : 'Заказ выполнен',
-      'canceled' : 'Заказ отменен',
-      'canceledByBuyer' : 'Заказ отменен покупателем',
-      'canceledBySeller' : 'Заказ отменен продавцом'
-    },
+    statuses,
     offer: null,
     step: 1,
     messages:[],    
