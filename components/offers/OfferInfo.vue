@@ -44,10 +44,10 @@
               outlined
               label="Ссылка"
               color="teal"
-              :value="offer.link"
+              :value="isMine ? offer.link : offer.linkWithTracker"
               readonly
               :append-icon="showCopy ? 'mdi-content-copy' : null"
-              @click:append="copy(offer.text)"
+              @click:append="copy(isMine ? offer.link : offer.linkWithTracker)"
             ></v-text-field>                  
             <v-text-field
               outlined
@@ -56,7 +56,7 @@
               :value="offer.title"
               readonly
               :append-icon="showCopy ? 'mdi-content-copy' : null"
-              @click:append="copy(offer.text)"
+              @click:append="copy(offer.title)"
             ></v-text-field>
             <v-textarea
               outlined

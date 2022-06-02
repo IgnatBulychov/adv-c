@@ -134,12 +134,10 @@
           </v-stepper-step>
 
           <v-stepper-content step="6">
-            <v-card
-              color="grey lighten-1"
-              class="mb-12"
-              height="200px"
-            ></v-card>
+            <offer-clicks
+             :offer="offer"/>
             <v-btn
+              class="mt-2"
               color="primary"
               @click="setStatus('completed')"
             >
@@ -230,6 +228,7 @@ import OfferMessenger from '~/components/offers/OfferMessenger';
 import { mapGetters } from 'vuex'
 import OfferInfo from '~/components/offers/OfferInfo';
 import CreateReview from '~/components/offers/CreateReview';
+import OfferClicks from '~/components/offers/OfferClicks';
 import statuses from '~/constants/offerStatuses'
 
 
@@ -237,7 +236,7 @@ export default {
   layout: 'index',
   middleware: ['auth'],
   components: {
-    OfferMessenger,OfferInfo,CreateReview
+    OfferMessenger,OfferInfo,CreateReview,OfferClicks
   },
   data: ()=>({    
     socket : null,

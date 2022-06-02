@@ -150,6 +150,10 @@
 
         <v-stepper-content step="6">
 
+           <offer-clicks
+           
+             :offer="offer"/>
+
         </v-stepper-content>
 
 
@@ -236,12 +240,13 @@ import { mapGetters } from 'vuex'
 import OfferMessenger from '~/components/offers/OfferMessenger';
 import OfferInfo from '~/components/offers/OfferInfo';
 import CreateReview from '~/components/offers/CreateReview';
+import OfferClicks from '~/components/offers/OfferClicks';
 import statuses from '~/constants/offerStatuses'
 
 export default {
   layout: 'index',
   components: {
-    OfferMessenger, OfferInfo, CreateReview
+    OfferMessenger, OfferInfo, CreateReview, OfferClicks
   },
   middleware: ['auth'],
   data: ()=>({
