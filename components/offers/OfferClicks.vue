@@ -38,9 +38,31 @@
       </v-btn>
       </div>
     </template>
+
+
+
+  <template v-slot:item.ip="{ item }">        
+             <img
+  alt="United States"
+  width="30"
+  height="auto"
+  src="http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg"/>      
+    </template>
     
     <template v-slot:item.createdAt="{ item }">        
       {{ new Date(item.createdAt).toLocaleString() }}          
+    </template>
+    <template v-slot:item.isDouble="{ item }">        
+      
+
+      <v-chip
+        class="ma-2"
+        :color="item.isDouble ? 'red' : 'success'"
+        text-color="white"
+      >
+        {{ item.isDouble ? 'Нет' : 'Да'}}    
+      </v-chip>
+
     </template>
   </v-data-table>
   <v-pagination
@@ -62,7 +84,7 @@ export default {
     headers: [
       { text: 'Дата/время', value: 'createdAt', sortable:false },
       { text: 'Страна', value: 'ip', sortable:false },
-      { text: 'Дубликат', value: 'isDuble', sortable:false }
+      { text: 'Уникальный переход?', value: 'isDouble', sortable:false }
     ],
     clicks: [],
     total: 1,

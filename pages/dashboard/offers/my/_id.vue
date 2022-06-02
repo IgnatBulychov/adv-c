@@ -45,6 +45,20 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+
+        <v-expansion-panels v-if="step>5" class="mt-2">
+          <v-expansion-panel>
+            <v-expansion-panel-header>
+              Статистика заказа
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+               <offer-clicks
+             :offer="offer"/>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+
+       
           
 
         <v-stepper

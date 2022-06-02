@@ -1,5 +1,6 @@
 <template>
   <div class="b-messenger">
+    <div class="text-center"> Мессенджер </div>
     <div class="b-messages"  ref="messages">
       <div 
         v-for="(message, key) in messages" :key="key"
@@ -10,8 +11,7 @@
         }"
         v-observe-visibility="(isVisible, entry) => visibilityChanged(isVisible, entry, key, message)"
       >
-        <div class="e-text">
-          {{ message.text }}
+        <div class="e-text" v-html="message.text.replace('\n', '<br/>')">
         </div>
         <div v-if="message.isFromMe" class="e-status">
           <v-icon>{{ message.isViewed ? 'mdi-check-all' : 'mdi-check' }}</v-icon>
@@ -19,14 +19,16 @@
       </div>
     </div>    
     <div class="b-input-message">
-      <v-text-field
+      <v-textarea
         v-model="message"
         placeholder="Введите сообщение"
         outlined
+        auto-grow
+        rows="1"
         append-outer-icon="mdi-send"
-        @keydown="sendMessage"
-        @click:append-outer="sendMessage"
-      ></v-text-field>
+        @keydown.enter="sendMessage"
+        @click:append-outer="sendMessageByClick"
+      ></v-textarea>
     </div>
   </div>
 </template>
@@ -54,9 +56,31 @@ export default {
   },
   methods:{
     sendMessage(event) {
-      if (!this.message || (event.type == 'keydown' && event.keyCode != 13)) {
+      if (event.ctrlKey) {
+        this.$emit('sendMessage', this.message)
+        this.message = ''
+      } else {
+        
+      }
+/*console.log(event.ctrlKey)
+      if (!event.ctrlKey && this.message.trim()) {
+        event.preventDefault()
+        this.$emit('sendMessage', this.message)
+        this.message = ''
+      } else if (this.message.trim()) {
+
+      }/*
+
+/*
+      if (!this.message.trim() || (event.type == 'keydown' && event.keyCode != 13)) {
+        
         return  
       }
+      
+      event.preventDefault()
+      */
+    },
+    sendMessageByClick() {
       this.$emit('sendMessage', this.message)
       this.message = ''
     },
@@ -97,7 +121,55 @@ export default {
  
   
   overflow-y: scroll;
+
+
+
 }
+
+
+
+
+
+  /* полоса прокрутки (скроллбар) */
+.b-messages::-webkit-scrollbar {
+    width: 14px;
+    height: 7px;
+    background-color: #ffffff;
+}
+/* ползунок скроллбара */
+.b-messages::-webkit-scrollbar-thumb {
+    background-color: #a0a0a0;
+}
+
+.b-messages::-webkit-scrollbar-thumb:hover {
+    background-color: #a0a0a0;
+}
+
+/* Стрелки */
+
+.b-messages::-webkit-scrollbar-button:vertical:start:decrement {
+    background: #a0a0a0;
+    background-color: #a0a0a0;;
+}
+
+.b-messages::-webkit-scrollbar-button:vertical:end:increment {
+   background: #a0a0a0;
+    background-color: #a0a0a0;;
+}
+
+.b-messages::-webkit-scrollbar-button:horizontal:start:decrement {
+    background: #a0a0a0;
+    background-color: #a0a0a0;;
+}
+
+.b-messages::-webkit-scrollbar-button:horizontal:end:increment {
+   background: #a0a0a0;
+    background-color: #a0a0a0;;
+}
+
+
+
+
 
 .b-input-message {
 
@@ -124,5 +196,10 @@ export default {
 }
 .e-text {
   flex: 1;
+}
+
+.e-status {
+  display: flex;
+    align-items: flex-end;
 }
 </style>
