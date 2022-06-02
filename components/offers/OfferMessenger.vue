@@ -46,8 +46,8 @@ export default {
   watch: {
     messages() {
       this.$nextTick(()=>{
-        if (this.$refs.messages.lastElementChild) {
-          this.$refs.messages.lastElementChild.scrollIntoView()
+        if (this.$refs.messages) {
+          this.$refs.messages.scrollTop= this.$refs.messages.scrollHeight
         }
       })
     }
@@ -64,6 +64,15 @@ export default {
       if (isVisible && !message.isViewed && !message.isFromMe) {
         this.$emit('setViewed', key, message)
       }
+    }
+  },
+  mounted() {
+    if (process.client) {
+      this.$nextTick(()=>{
+        if (this.$refs.messages) {
+          this.$refs.messages.scrollTop= this.$refs.messages.scrollHeight
+        }
+      })
     }
   }
 }
