@@ -16,7 +16,7 @@ export const getters = {
 
 export const mutations = {
   LOGIN(state, payload) {
-    this.$cookies.set('user', payload)
+    this.$cookies.set('user', payload, { maxAge : 60*60*24*365 })
     state.user = payload
     state.isLoggedIn = true
   },
