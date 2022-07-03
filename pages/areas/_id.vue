@@ -132,6 +132,31 @@
 </v-card-subtitle>
 
 </v-card>
+
+
+
+<v-card class="mx-2 my-2">
+  <v-card-title>
+    <h3>Отзывы</h3>
+
+    <div class="reviews">
+      <div v-for="review in area.reviews" :key="review.id" class="review">
+        <div class="name d-flex justify-center items-center">
+          <v-img :src="review.author.avatar" width="18px" height="18px"></v-img>
+          <div>
+            {{ review.author.firstName }} {{  review.author.lastName }}
+          </div>
+          <div class="text">
+            {{ review.review }}
+          </div> 
+        </div>       
+      </div>
+    </div>
+
+
+  </v-card-title>
+</v-card>
+
  </v-col>
        </v-row>
 
@@ -164,8 +189,12 @@ export default {
   methods: {
   },
   async mounted() {
-    let res = await this.$axios.get(`/areas/${this.$route.params.id}`)
-    this.area = res.data
+    let [resAreas, resReviews] = await Promise.all([
+      this.$axios.get(`/areas/${this.$route.params.id}`),
+      this.$axios.get(`/reviews/area/${this.$route.params.id}`),
+    ])
+    this.area = resAreas.data
+    this.area.reviews = resReviews.data
   }
 }
 </script>

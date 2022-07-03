@@ -86,7 +86,7 @@
             :timeout="6000"
             :top="true"
             color="error"
-          >f
+          >{{ errorsFromServer }}
           <v-btn
             color="white"
             text
@@ -114,7 +114,7 @@ export default {
           isSeller: true,
           isBuyer: true,
       },    
-      errorsFromServer:{},
+      errorsFromServer:false,
       loading: false,
       emailRules: [
         v => !!v || 'Введите E-mail',
@@ -135,6 +135,7 @@ export default {
           this.register(this.form)
         } catch (e) {
           console.warn(e.data)
+          this.errorsFromServer = e.data
         }
       }
     },
